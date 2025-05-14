@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CONTENIA - Generador de Contenido</title>
+</head>
+<body>
+  <h1>🧠 CONTENIA</h1>
+  <form method="POST">
+    <label>Tipo de contenido:</label>
+    <input name="tipo" placeholder="Artículo, Anuncio, Libro..." required><br><br>
+
+    <label>Tema:</label>
+    <input name="tema" placeholder="Ej: Cómo ganar dinero con IA" required><br><br>
+
+    <label>Estilo:</label>
+    <input name="estilo" placeholder="Profesional, informal..." required><br><br>
+
+    <label>Longitud (palabras):</label>
+    <input type="number" name="longitud" value="100" min="50" max="1000"><br><br>
+
+    <button type="submit">Generar contenido</button>
+  </form>
+
+  {% if resultado %}
+    <h2>📝 Resultado:</h2>
+    <p>{{ resultado }}</p>
+  {% endif %}
+</body>
+</html>
