@@ -5,18 +5,30 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Helmet } from "react-helmet";
 import NotFound from "@/pages/not-found";
+import { useAuth } from "@/hooks/useAuth";
 
 // Import all pages
 import Home from "@/pages/home";
 import ProductGenerator from "@/pages/product-generator";
 import ContentGenerator from "@/pages/content-generator";
+import Pricing from "@/pages/pricing";
+import Templates from "@/pages/templates";
+import Dashboard from "@/pages/dashboard";
+import Subscribe from "@/pages/subscribe";
 
 function Router() {
+  const { isAuthenticated, isLoading } = useAuth();
+
   return (
     <Switch>
+      {/* Show homepage by default, regardless of auth state */}
       <Route path="/" component={Home} />
       <Route path="/product-generator" component={ProductGenerator} />
       <Route path="/content-generator" component={ContentGenerator} />
+      <Route path="/pricing" component={Pricing} />
+      <Route path="/templates" component={Templates} />
+      <Route path="/dashboard" component={Dashboard} />
+      <Route path="/subscribe" component={Subscribe} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
