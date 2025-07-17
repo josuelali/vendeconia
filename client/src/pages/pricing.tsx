@@ -16,14 +16,14 @@ export default function Pricing() {
     enabled: true,
   });
 
-  const handleSubscribe = async (planId: string) => {
+  const handleSubscribe = async (planId: string, stripeId: string) => {
     if (!isAuthenticated) {
       window.location.href = '/api/login';
       return;
     }
 
     try {
-      const response = await apiRequest("POST", "/api/create-subscription", { planId });
+      const response = await apiRequest("POST", "/api/create-subscription", { planId: stripeId });
       const { clientSecret } = response;
       
       if (clientSecret) {
@@ -95,7 +95,7 @@ export default function Pricing() {
     },
   ];
 
-  const plansToDisplay = plans || defaultPlans;
+  const plansToDisplay = plans?.length > 0 ? plans : defaultPlans;
 
   if (isLoading) {
     return (
@@ -164,7 +164,7 @@ export default function Pricing() {
                       ? 'bg-blue-600 hover:bg-blue-700' 
                       : 'bg-gray-600 hover:bg-gray-700'
                   }`}
-                  onClick={() => handleSubscribe(plan.id)}
+                  onClick={() => handleSubscribe(plan.id, plan.stripe_price_id || plan.id)}
                   disabled={user?.subscriptionPlan === plan.id}
                 >
                   {user?.subscriptionPlan === plan.id ? 'Plan Actual' : 'Elegir Plan'}

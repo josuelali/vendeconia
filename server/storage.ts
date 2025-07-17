@@ -29,6 +29,7 @@ import { eq, desc, and, gte, lte } from "drizzle-orm";
 export interface IStorage {
   // User methods (required for auth)
   getUser(id: string): Promise<User | undefined>;
+  getUserByStripeCustomerId(stripeCustomerId: string): Promise<User[]>;
   upsertUser(user: UpsertUser): Promise<User>;
   updateUserSubscription(userId: string, plan: string, endsAt?: Date): Promise<User>;
   updateUserStripeInfo(userId: string, stripeCustomerId: string, stripeSubscriptionId: string): Promise<User>;
@@ -72,6 +73,11 @@ export class DatabaseStorage implements IStorage {
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
+  }
+
+  async getUserByStripeCustomerId(stripeCustomerId: string): Promise<User[]> {
+    const userList = await db.select().from(users).where(eq(users.stripeCustomerId, stripeCustomerId));
+    return userList;
   }
 
   async upsertUser(userData: UpsertUser): Promise<User> {

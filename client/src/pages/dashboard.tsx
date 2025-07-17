@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UsageLimits } from "@/components/ui/usage-limits";
 import { 
   TrendingUp, 
   Package, 
@@ -14,7 +15,9 @@ import {
   Crown,
   BarChart3,
   Calendar,
-  Settings 
+  Settings,
+  Zap,
+  AlertCircle
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "wouter";
@@ -118,6 +121,20 @@ export default function Dashboard() {
               </Link>
             </div>
           </div>
+        </div>
+
+        {/* Usage Limits Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+          <UsageLimits
+            type="product"
+            current={user?.monthlyProductGenerations || 0}
+            limit={limits.products}
+          />
+          <UsageLimits
+            type="content"
+            current={user?.monthlyContentGenerations || 0}
+            limit={limits.contents}
+          />
         </div>
 
         {/* Stats Cards */}

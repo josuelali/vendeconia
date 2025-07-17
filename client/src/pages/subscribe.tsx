@@ -3,19 +3,19 @@ import { loadStripe } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'wouter';
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 // Make sure to call `loadStripe` outside of a component's render to avoid
 // recreating the `Stripe` object on every render.
-if (!import.meta.env.VITE_STRIPE_PUBLIC_KEY) {
-  throw new Error('Missing required Stripe key: VITE_STRIPE_PUBLIC_KEY');
-}
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+const stripeKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_51RNALTE15RCURYu3jErT82VBtn5GhI5rykGcu5MCcmXwwiyWGQqKJdhuuUNGqrhUcz1dVi6N2vzfhfBvCxEXmVxB00wmbHZfOJ';
+const stripePromise = loadStripe(stripeKey);
 
-const SubscribeForm = () => {
+const SubscribeForm = ({ clientSecret }: { clientSecret: string }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { toast } = useToast();
   const [, navigate] = useLocation();
+  const [processing, setProcessing] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +23,8 @@ const SubscribeForm = () => {
     if (!stripe || !elements) {
       return;
     }
+
+    setProcessing(true);
 
     const { error } = await stripe.confirmPayment({
       elements,
@@ -44,6 +46,8 @@ const SubscribeForm = () => {
       });
       navigate("/dashboard");
     }
+    
+    setProcessing(false);
   }
 
   return (
@@ -62,10 +66,10 @@ const SubscribeForm = () => {
           <PaymentElement />
           <button 
             type="submit" 
-            disabled={!stripe}
+            disabled={!stripe || processing}
             className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Confirmar Suscripción
+            {processing ? 'Procesando...' : 'Confirmar Suscripción'}
           </button>
         </form>
 

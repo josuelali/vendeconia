@@ -221,6 +221,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Stripe webhook handler
+  app.post("/api/stripe/webhook", async (req, res) => {
+    const sig = req.headers['stripe-signature'];
+    const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+    
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    } catch (err) {
+      console.log('Webhook signature verification failed.', err);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Handle the event
+    try {
+      switch (event.type) {
+        case 'invoice.payment_succeeded':
+          const invoice = event.data.object;
+          const subscriptionId = invoice.subscription;
+          const customerId = invoice.customer;
+          
+          // Find user by stripe customer ID
+          const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+          const customer = await stripe.customers.retrieve(customerId);
+          
+          // Update user subscription status
+          const users = await storage.getUserByStripeCustomerId(customerId);
+          if (users.length > 0) {
+            const user = users[0];
+            const planName = subscription.items.data[0].price.nickname || 'premium';
+            const endsAt = new Date(subscription.current_period_end * 1000);
+            
+            await storage.updateUserSubscription(user.id, planName, endsAt);
+            console.log(`✅ Subscription activated for user ${user.id}: ${planName}`);
+          }
+          break;
+          
+        case 'customer.subscription.deleted':
+          const deletedSubscription = event.data.object;
+          const deletedCustomerId = deletedSubscription.customer;
+          
+          // Find user and downgrade to free plan
+          const deletedUsers = await storage.getUserByStripeCustomerId(deletedCustomerId);
+          if (deletedUsers.length > 0) {
+            const user = deletedUsers[0];
+            await storage.updateUserSubscription(user.id, 'free');
+            console.log(`❌ Subscription cancelled for user ${user.id}`);
+          }
+          break;
+          
+        default:
+          console.log(`Unhandled event type ${event.type}`);
+      }
+    } catch (error) {
+      console.error('Error processing webhook:', error);
+      return res.status(500).json({ message: 'Webhook processing failed' });
+    }
+
+    res.json({ received: true });
+  });
+
+  // Billing portal
+  app.post("/api/billing-portal", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user?.stripeCustomerId) {
+        return res.status(400).json({ message: "No hay información de facturación disponible" });
+      }
+
+      const portalSession = await stripe.billingPortal.sessions.create({
+        customer: user.stripeCustomerId,
+        return_url: `${req.protocol}://${req.get('host')}/dashboard`,
+      });
+
+      res.json({ url: portalSession.url });
+    } catch (error) {
+      console.error("Error creating billing portal session:", error);
+      res.status(500).json({ message: "Error accessing billing portal" });
+    }
+  });
+
   // Affiliate tracking routes
   app.post("/api/affiliate/track", isAuthenticated, async (req: any, res) => {
     try {
@@ -291,50 +374,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       console.error("Error updating consulting service status:", error);
       res.status(500).json({ message: "Error updating consulting service status" });
     }
-  });
-
-  // Stripe webhook for subscription updates
-  app.post('/api/webhook/stripe', async (req, res) => {
-    const sig = req.headers['stripe-signature'];
-    let event;
-
-    try {
-      event = stripe.webhooks.constructEvent(req.body, sig!, process.env.STRIPE_WEBHOOK_SECRET!);
-    } catch (err) {
-      console.error('Webhook signature verification failed:', err);
-      return res.status(400).send('Webhook signature verification failed');
-    }
-
-    try {
-      switch (event.type) {
-        case 'customer.subscription.updated':
-        case 'customer.subscription.deleted':
-          const subscription = event.data.object;
-          const customerId = subscription.customer;
-          
-          // Find user by Stripe customer ID
-          const user = await storage.getUser(customerId as string);
-          if (user) {
-            const planName = subscription.status === 'active' ? 
-              (subscription.items.data[0]?.price?.lookup_key || 'premium') : 'free';
-            
-            await storage.updateUserSubscription(
-              user.id,
-              planName,
-              subscription.status === 'active' ? new Date(subscription.current_period_end * 1000) : undefined
-            );
-          }
-          break;
-        
-        default:
-          console.log(`Unhandled event type ${event.type}`);
-      }
-    } catch (error) {
-      console.error('Error processing webhook:', error);
-      return res.status(500).send('Error processing webhook');
-    }
-
-    res.status(200).send('Webhook processed successfully');
   });
 
   const httpServer = createServer(app);
