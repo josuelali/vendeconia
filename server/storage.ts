@@ -1,13 +1,13 @@
-import { 
-  users, 
-  type User, 
-  type InsertUser, 
+import {
+  users,
+  type User,
+  type InsertUser,
   type UpsertUser,
-  products, 
-  type Product, 
-  type InsertProduct, 
-  contents, 
-  type Content, 
+  products,
+  type Product,
+  type InsertProduct,
+  contents,
+  type Content,
   type InsertContent,
   templates,
   type Template,
@@ -20,7 +20,7 @@ import {
   type ConsultingService,
   type InsertConsultingService,
   subscriptionPlans,
-  type SubscriptionPlan
+  type SubscriptionPlan,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, gte, lte } from "drizzle-orm";
@@ -31,39 +31,63 @@ export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
   getUserByStripeCustomerId(stripeCustomerId: string): Promise<User[]>;
   upsertUser(user: UpsertUser): Promise<User>;
-  updateUserSubscription(userId: string, plan: string, endsAt?: Date): Promise<User>;
-  updateUserStripeInfo(userId: string, stripeCustomerId: string, stripeSubscriptionId: string): Promise<User>;
-  trackUserUsage(userId: string, type: 'product' | 'content'): Promise<void>;
+  updateUserSubscription(
+    userId: string,
+    plan: string,
+    endsAt?: Date,
+  ): Promise<User>;
+  updateUserStripeInfo(
+    userId: string,
+    stripeCustomerId: string,
+    stripeSubscriptionId: string,
+  ): Promise<User>;
+  trackUserUsage(userId: string, type: "product" | "content"): Promise<void>;
   resetUserUsage(userId: string): Promise<void>;
-  
+
   // Product methods
   getProduct(id: number): Promise<Product | undefined>;
   getRecentProducts(limit?: number): Promise<Product[]>;
   getUserProducts(userId: string, limit?: number): Promise<Product[]>;
   createProduct(product: InsertProduct & { userId: string }): Promise<Product>;
-  
+
   // Content methods
   getContent(id: number): Promise<Content | undefined>;
   getContentByProduct(productId: number): Promise<Content[]>;
   getUserContents(userId: string, limit?: number): Promise<Content[]>;
   createContent(content: InsertContent & { userId: string }): Promise<Content>;
-  
+
   // Template marketplace methods
   getTemplate(id: number): Promise<Template | undefined>;
   getTemplates(category?: string, limit?: number): Promise<Template[]>;
   getUserTemplates(userId: string): Promise<Template[]>;
-  createTemplate(template: InsertTemplate & { creatorId: string }): Promise<Template>;
-  purchaseTemplate(buyerId: string, templateId: number, price: number): Promise<TemplatePurchase>;
-  
+  createTemplate(
+    template: InsertTemplate & { creatorId: string },
+  ): Promise<Template>;
+  purchaseTemplate(
+    buyerId: string,
+    templateId: number,
+    price: number,
+  ): Promise<TemplatePurchase>;
+
   // Affiliate methods
-  trackAffiliateTransaction(userId: string, productId: number, type: string, amount: number): Promise<AffiliateTransaction>;
+  trackAffiliateTransaction(
+    userId: string,
+    productId: number,
+    type: string,
+    amount: number,
+  ): Promise<AffiliateTransaction>;
   getUserAffiliateEarnings(userId: string): Promise<number>;
-  
+
   // Consulting methods
   getConsultingServices(userId?: string): Promise<ConsultingService[]>;
-  createConsultingService(service: InsertConsultingService & { consultantId: string }): Promise<ConsultingService>;
-  updateConsultingServiceStatus(serviceId: number, status: string): Promise<ConsultingService>;
-  
+  createConsultingService(
+    service: InsertConsultingService & { consultantId: string },
+  ): Promise<ConsultingService>;
+  updateConsultingServiceStatus(
+    serviceId: number,
+    status: string,
+  ): Promise<ConsultingService>;
+
   // Subscription plans
   getSubscriptionPlans(): Promise<SubscriptionPlan[]>;
 }
@@ -76,7 +100,10 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserByStripeCustomerId(stripeCustomerId: string): Promise<User[]> {
-    const userList = await db.select().from(users).where(eq(users.stripeCustomerId, stripeCustomerId));
+    const userList = await db
+      .select()
+      .from(users)
+      .where(eq(users.stripeCustomerId, stripeCustomerId));
     return userList;
   }
 
@@ -86,7 +113,7 @@ export class DatabaseStorage implements IStorage {
       .values({
         ...userData,
         // Generate affiliate code if not exists
-        affiliateCode: userData.id ? `VCA${userData.id.slice(-6)}` : undefined
+        affiliateCode: userData.id ? `VCA${userData.id.slice(-6)}` : undefined,
       })
       .onConflictDoUpdate({
         target: users.id,
@@ -99,51 +126,67 @@ export class DatabaseStorage implements IStorage {
     return user;
   }
 
-  async updateUserSubscription(userId: string, plan: string, endsAt?: Date): Promise<User> {
+  async updateUserSubscription(
+    userId: string,
+    plan: string,
+    endsAt?: Date,
+  ): Promise<User> {
     const [user] = await db
       .update(users)
       .set({
         subscriptionPlan: plan,
         subscriptionEndsAt: endsAt,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(users.id, userId))
       .returning();
     return user;
   }
 
-  async updateUserStripeInfo(userId: string, stripeCustomerId: string, stripeSubscriptionId: string): Promise<User> {
+  async updateUserStripeInfo(
+    userId: string,
+    stripeCustomerId: string,
+    stripeSubscriptionId: string,
+  ): Promise<User> {
     const [user] = await db
       .update(users)
       .set({
         stripeCustomerId,
         stripeSubscriptionId,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       })
       .where(eq(users.id, userId))
       .returning();
     return user;
   }
 
-  async trackUserUsage(userId: string, type: 'product' | 'content'): Promise<void> {
+  async trackUserUsage(
+    userId: string,
+    type: "product" | "content",
+  ): Promise<void> {
     const user = await this.getUser(userId);
     if (!user) return;
 
     // Reset usage if it's a new month
     const now = new Date();
     const lastReset = user.lastResetDate || new Date();
-    const shouldReset = now.getMonth() !== lastReset.getMonth() || now.getFullYear() !== lastReset.getFullYear();
+    const shouldReset =
+      now.getMonth() !== lastReset.getMonth() ||
+      now.getFullYear() !== lastReset.getFullYear();
 
     if (shouldReset) {
       await this.resetUserUsage(userId);
     }
 
     // Increment usage
-    const field = type === 'product' ? 'monthlyProductGenerations' : 'monthlyContentGenerations';
+    const field =
+      type === "product"
+        ? "monthlyProductGenerations"
+        : "monthlyContentGenerations";
     await db
       .update(users)
       .set({
-        [field]: (user[field] || 0) + 1
+        [field]: (user[field] || 0) + 1,
       })
       .where(eq(users.id, userId));
   }
@@ -154,14 +197,17 @@ export class DatabaseStorage implements IStorage {
       .set({
         monthlyProductGenerations: 0,
         monthlyContentGenerations: 0,
-        lastResetDate: new Date()
+        lastResetDate: new Date(),
       })
       .where(eq(users.id, userId));
   }
-  
+
   // Product methods
   async getProduct(id: number): Promise<Product | undefined> {
-    const [product] = await db.select().from(products).where(eq(products.id, id));
+    const [product] = await db
+      .select()
+      .from(products)
+      .where(eq(products.id, id));
     return product;
   }
 
@@ -174,7 +220,10 @@ export class DatabaseStorage implements IStorage {
     return productList;
   }
 
-  async getUserProducts(userId: string, limit: number = 10): Promise<Product[]> {
+  async getUserProducts(
+    userId: string,
+    limit: number = 10,
+  ): Promise<Product[]> {
     const productList = await db
       .select()
       .from(products)
@@ -184,17 +233,19 @@ export class DatabaseStorage implements IStorage {
     return productList;
   }
 
-  async createProduct(productData: InsertProduct & { userId: string }): Promise<Product> {
-    const [product] = await db
-      .insert(products)
-      .values(productData)
-      .returning();
+  async createProduct(
+    productData: InsertProduct & { userId: string },
+  ): Promise<Product> {
+    const [product] = await db.insert(products).values(productData).returning();
     return product;
   }
 
   // Content methods
   async getContent(id: number): Promise<Content | undefined> {
-    const [content] = await db.select().from(contents).where(eq(contents.id, id));
+    const [content] = await db
+      .select()
+      .from(contents)
+      .where(eq(contents.id, id));
     return content;
   }
 
@@ -207,7 +258,10 @@ export class DatabaseStorage implements IStorage {
     return contentList;
   }
 
-  async getUserContents(userId: string, limit: number = 10): Promise<Content[]> {
+  async getUserContents(
+    userId: string,
+    limit: number = 10,
+  ): Promise<Content[]> {
     const contentList = await db
       .select()
       .from(contents)
@@ -217,25 +271,27 @@ export class DatabaseStorage implements IStorage {
     return contentList;
   }
 
-  async createContent(contentData: InsertContent & { userId: string }): Promise<Content> {
-    const [content] = await db
-      .insert(contents)
-      .values(contentData)
-      .returning();
+  async createContent(
+    contentData: InsertContent & { userId: string },
+  ): Promise<Content> {
+    const [content] = await db.insert(contents).values(contentData).returning();
     return content;
   }
 
   // Template marketplace methods
   async getTemplate(id: number): Promise<Template | undefined> {
-    const [template] = await db.select().from(templates).where(eq(templates.id, id));
+    const [template] = await db
+      .select()
+      .from(templates)
+      .where(eq(templates.id, id));
     return template;
   }
 
-  async getTemplates(category?: string, limit: number = 20): Promise<Template[]> {
-    let query = db
-      .select()
-      .from(templates)
-      .where(eq(templates.isActive, true));
+  async getTemplates(
+    category?: string,
+    limit: number = 20,
+  ): Promise<Template[]> {
+    let query = db.select().from(templates).where(eq(templates.isActive, true));
 
     if (category) {
       query = query.where(eq(templates.category, category));
@@ -256,7 +312,9 @@ export class DatabaseStorage implements IStorage {
     return templateList;
   }
 
-  async createTemplate(templateData: InsertTemplate & { creatorId: string }): Promise<Template> {
+  async createTemplate(
+    templateData: InsertTemplate & { creatorId: string },
+  ): Promise<Template> {
     const [template] = await db
       .insert(templates)
       .values(templateData)
@@ -264,13 +322,17 @@ export class DatabaseStorage implements IStorage {
     return template;
   }
 
-  async purchaseTemplate(buyerId: string, templateId: number, price: number): Promise<TemplatePurchase> {
+  async purchaseTemplate(
+    buyerId: string,
+    templateId: number,
+    price: number,
+  ): Promise<TemplatePurchase> {
     const [purchase] = await db
       .insert(templatePurchases)
       .values({
         buyerId,
         templateId,
-        price
+        price,
       })
       .returning();
 
@@ -278,7 +340,11 @@ export class DatabaseStorage implements IStorage {
     await db
       .update(templates)
       .set({
-        downloads: db.select().from(templates).where(eq(templates.id, templateId)).then(t => (t[0]?.downloads || 0) + 1)
+        downloads: db
+          .select()
+          .from(templates)
+          .where(eq(templates.id, templateId))
+          .then((t) => (t[0]?.downloads || 0) + 1),
       })
       .where(eq(templates.id, templateId));
 
@@ -286,23 +352,32 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Affiliate methods
-  async trackAffiliateTransaction(userId: string, productId: number, type: string, amount: number): Promise<AffiliateTransaction> {
+  async trackAffiliateTransaction(
+    userId: string,
+    productId: number,
+    type: string,
+    amount: number,
+  ): Promise<AffiliateTransaction> {
     const [transaction] = await db
       .insert(affiliateTransactions)
       .values({
         userId,
         productId,
         transactionType: type,
-        amount
+        amount,
       })
       .returning();
 
     // Update user's affiliate earnings if it's a commission
-    if (type === 'commission') {
+    if (type === "commission") {
       await db
         .update(users)
         .set({
-          affiliateEarnings: db.select().from(users).where(eq(users.id, userId)).then(u => (u[0]?.affiliateEarnings || 0) + amount)
+          affiliateEarnings: db
+            .select()
+            .from(users)
+            .where(eq(users.id, userId))
+            .then((u) => (u[0]?.affiliateEarnings || 0) + amount),
         })
         .where(eq(users.id, userId));
     }
@@ -327,7 +402,9 @@ export class DatabaseStorage implements IStorage {
     return services;
   }
 
-  async createConsultingService(serviceData: InsertConsultingService & { consultantId: string }): Promise<ConsultingService> {
+  async createConsultingService(
+    serviceData: InsertConsultingService & { consultantId: string },
+  ): Promise<ConsultingService> {
     const [service] = await db
       .insert(consultingServices)
       .values(serviceData)
@@ -335,12 +412,15 @@ export class DatabaseStorage implements IStorage {
     return service;
   }
 
-  async updateConsultingServiceStatus(serviceId: number, status: string): Promise<ConsultingService> {
+  async updateConsultingServiceStatus(
+    serviceId: number,
+    status: string,
+  ): Promise<ConsultingService> {
     const [service] = await db
       .update(consultingServices)
       .set({
         status,
-        ...(status === 'completed' ? { completedAt: new Date() } : {})
+        ...(status === "completed" ? { completedAt: new Date() } : {}),
       })
       .where(eq(consultingServices.id, serviceId))
       .returning();
