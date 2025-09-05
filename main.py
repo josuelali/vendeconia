@@ -1,13 +1,13 @@
+
 from flask import Flask, render_template, request
 import openai
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
-openai.api_key = os.getenv(sk-...nUkA
-)
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
-app = Flask(__Contenia__)
+app = Flask(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def home():

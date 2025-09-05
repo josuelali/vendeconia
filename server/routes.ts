@@ -51,6 +51,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.post("/api/products/generate", async (req: any, res) => {
+    try {
+      // For demo purposes, use default user
+      const userId = 'demo_user_1';
+      
+      const { category, priceRange, trendingOnly, fastShipping } = req.body;
+      const products = await generateProductIdeas(category, priceRange, trendingOnly, fastShipping);
+      
+      // Save products to database
+      const savedProducts = await Promise.all(
+        products.map(product => storage.createProduct({ ...product, userId }))
+      );
+      
+      res.json({ products: savedProducts });
+    } catch (error) {
+      console.error("Error generating products:", error);
+      res.status(500).json({ message: "Error generating products" });
+    }
+  });
+
+  app.get("/api/products/recent", async (req, res) => {
+    try {
+      const products = await storage.getRecentProducts(20);
+      res.json({ products });
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      res.status(500).json({ message: "Error fetching products" });
+    }
+  });
+
+  app.post("/api/content/generate", async (req: any, res) => {
+    try {
+      const userId = 'demo_user_1';
+      const { productId, contentData } = req.body;
+      
+      // Generate video URL (placeholder for now)
+      const videoUrl = `https://example.com/video/${Date.now()}.mp4`;
+      
+      const content = await storage.createContent({
+        userId,
+        productId,
+        title: contentData.title,
+        description: contentData.description,
+        music: contentData.music,
+        animation: contentData.animation,
+        cta: contentData.cta,
+        videoUrl
+      });
+      
+      res.json({ videoUrl, content });
+    } catch (error) {
+      console.error("Error generating content:", error);
+      res.status(500).json({ message: "Error generating content" });
+    }
+  });
+
   app.get("/api/products", async (req, res) => {
     try {
       const products = await storage.getRecentProducts(20);
