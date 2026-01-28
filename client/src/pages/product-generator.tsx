@@ -107,7 +107,7 @@ export default function ProductGenerator() {
                 <button
                   onClick={handleGenerateProducts}
                   disabled={generateProductsMutation.isPending}
-                  className="px-5 py-3 rounded-lg shadow-lg text-sm font-semibold text-white bg-primary-500 hover:bg-primary-600 flex items-center disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="px-5 py-3 rounded-lg shadow-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 flex items-center disabled:opacity-70 disabled:cursor-not-allowed"
                 >
                   {generateProductsMutation.isPending ? (
                     <>

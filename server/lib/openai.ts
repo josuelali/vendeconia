@@ -1,7 +1,12 @@
 import OpenAI from "openai";
 import { InsertProduct } from "@shared/schema";
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+/** Crea el cliente SOLO si hay API key (evita errores raros al arrancar) */
+function getOpenAIClient(): OpenAI | null {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) return null;
+  return new OpenAI({ apiKey: key });
+}
 
 // Helpers
 function safeString(v: any, fallback = ""): string {
@@ -16,24 +21,25 @@ function safeNumber(v: any, fallback = 0): number {
 }
 
 function ensureTags(v: any): string[] {
-  if (Array.isArray(v))
+  if (Array.isArray(v)) {
     return v
       .map((x) => safeString(x))
       .filter(Boolean)
       .slice(0, 5);
-  if (typeof v === "string")
+  }
+  if (typeof v === "string") {
     return v
       .split(",")
       .map((x) => x.trim())
       .filter(Boolean)
       .slice(0, 5);
+  }
   return [];
 }
 
 function ensureViews(v: any, idx: number): string {
   const s = safeString(v);
-  if (s) return s;
-  return `${10 + idx * 5}k+`;
+  return s || `${10 + idx * 5}k+`;
 }
 
 function ensureName(p: any, idx: number): string {
@@ -48,15 +54,7 @@ function ensureName(p: any, idx: number): string {
   return `Producto viral #${idx + 1}`;
 }
 
-function normalizeProducts(raw: any): InsertProduct[] {
-  // Acepta: { products: [...] }  o  [...] directo
-  const arr = Array.isArray(raw)
-    ? raw
-    : Array.isArray(raw?.products)
-      ? raw.products
-      : [];
-
-  // Imágenes placeholder
+function pickImage(idx: number): string {
   const productImages = [
     "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=500&h=350",
     "https://images.unsplash.com/photo-1603899122634-f086ca5f5ddd?auto=format&fit=crop&w=500&h=350",
@@ -64,6 +62,22 @@ function normalizeProducts(raw: any): InsertProduct[] {
     "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=500&h=350",
     "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?auto=format&fit=crop&w=500&h=350",
   ];
+  return productImages[idx % productImages.length];
+}
+
+/**
+ * Normaliza y BLINDA la salida para que:
+ * - siempre haya name (nunca null)
+ * - siempre haya description, price, imageUrl
+ * - las flags sean boolean
+ */
+function normalizeProducts(raw: any): InsertProduct[] {
+  // Acepta: { products: [...] } o [...] directo
+  const arr = Array.isArray(raw)
+    ? raw
+    : Array.isArray(raw?.products)
+      ? raw.products
+      : [];
 
   return arr.slice(0, 5).map((p: any, idx: number) => {
     const trending =
@@ -76,8 +90,7 @@ function normalizeProducts(raw: any): InsertProduct[] {
       name: ensureName(p, idx),
       description: safeString(p?.description, "Producto recomendado para ti."),
       price: safeString(p?.price, "€19.99"),
-      imageUrl:
-        safeString(p?.imageUrl) || productImages[idx % productImages.length],
+      imageUrl: safeString(p?.imageUrl) || pickImage(idx),
       rating: safeNumber(p?.rating, 4.5),
       reviews: Math.max(0, Math.floor(safeNumber(p?.reviews, 300))),
       trending,
@@ -85,11 +98,14 @@ function normalizeProducts(raw: any): InsertProduct[] {
       popular,
       views: ensureViews(p?.views, idx),
       tags: ensureTags(p?.tags),
-      // OJO: userId NO lo pongas aquí; se lo mete routes.ts al guardar
+      // NO userId aquí (lo añade routes.ts al guardar)
     };
 
-    // Garantía anti-DB: name nunca vacío
+    // Seguro extra anti-DB
     if (!out.name) out.name = `Producto viral #${idx + 1}`;
+    if (!out.description) out.description = "Producto recomendado para ti.";
+    if (!out.price) out.price = "€19.99";
+    if (!out.imageUrl) out.imageUrl = pickImage(idx);
 
     return out as InsertProduct;
   });
@@ -98,19 +114,17 @@ function normalizeProducts(raw: any): InsertProduct[] {
 // Generate text using OpenAI
 export async function generateText(prompt: string): Promise<string> {
   try {
-    if (!process.env.OPENAI_API_KEY) {
-      return "No hay API Key configurada. (modo demo)";
-    }
+    const client = getOpenAIClient();
+    if (!client) return "No hay API Key configurada. (modo demo)";
 
-    const response = await openai.chat.completions.create({
+    const response = await client.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
     });
 
-    return response.choices[0].message.content || "";
+    return response.choices[0]?.message?.content || "";
   } catch (error) {
     console.error("Error generating text with OpenAI:", error);
-    // No reventamos la app
     return "No se pudo generar texto ahora mismo. (modo demo)";
   }
 }
@@ -129,11 +143,13 @@ export async function generateProductIdeas(
     "Premium",
     "Lujo",
   ];
-  const priceLabel =
-    priceLabels[Math.max(0, Math.min(4, (priceRange || 3) - 1))];
+  const idx = Math.max(0, Math.min(4, (priceRange || 3) - 1));
+  const priceLabel = priceLabels[idx];
 
-  // Si NO hay key: fallback directo
-  if (!process.env.OPENAI_API_KEY) {
+  const client = getOpenAIClient();
+
+  // Sin key: fallback directo
+  if (!client) {
     console.warn("No OpenAI API key found, using fallback product ideas");
     return fallbackProductIdeas(
       category,
@@ -168,23 +184,35 @@ Devuelve ÚNICAMENTE un JSON con esta forma EXACTA:
     }
   ]
 }
-`;
+`.trim();
 
-    const response = await openai.chat.completions.create({
+    const response = await client.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
       response_format: { type: "json_object" },
     });
 
-    const content = response.choices[0].message.content;
+    const content = response.choices[0]?.message?.content;
     if (!content) throw new Error("Empty response from OpenAI");
 
-    const parsed = JSON.parse(content);
+    let parsed: any;
+    try {
+      parsed = JSON.parse(content);
+    } catch (e) {
+      console.error(
+        "OpenAI returned non-JSON content, using fallback:",
+        content,
+      );
+      return fallbackProductIdeas(
+        category,
+        priceRange,
+        trendingOnly,
+        fastShipping,
+      );
+    }
 
-    // Normalizamos para evitar name=null y formatos raros
     const normalized = normalizeProducts(parsed);
 
-    // Si por lo que sea viene vacío, fallback
     if (!normalized.length) {
       return fallbackProductIdeas(
         category,
@@ -196,8 +224,11 @@ Devuelve ÚNICAMENTE un JSON con esta forma EXACTA:
 
     return normalized;
   } catch (error: any) {
-    // Si OpenAI falla por 401/429/etc -> fallback (NO petar)
-    console.error("Error generating product ideas:", error);
+    // ✅ 401/429/etc -> fallback (sin romper la app)
+    console.error(
+      "OpenAI failed, using fallback:",
+      error?.status || error?.message || error,
+    );
     return fallbackProductIdeas(
       category,
       priceRange,
@@ -220,24 +251,21 @@ function fallbackProductIdeas(
       description:
         "Mantén cables y accesorios organizados con este estuche resistente al agua.",
       price: "€19.99",
-      imageUrl:
-        "https://images.unsplash.com/photo-1563013544-824ae1b704d3?auto=format&fit=crop&w=500&h=350",
+      imageUrl: pickImage(0),
       tags: ["Tecnología", "Organización", "Unisex"],
     },
     {
       name: "Botella Motivacional con Indicador de Tiempo",
       description: "Botella que te recuerda cuándo beber agua. Libre de BPA.",
       price: "€24.99",
-      imageUrl:
-        "https://images.unsplash.com/photo-1526401485004-2aa7f3f8b2d6?auto=format&fit=crop&w=500&h=350",
+      imageUrl: pickImage(1),
       tags: ["Fitness", "Ecológico", "Bestseller"],
     },
     {
       name: "Luz LED Inteligente Multicolor",
       description: "Luz LED con millones de colores y control por app.",
       price: "€29.99",
-      imageUrl:
-        "https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=500&h=350",
+      imageUrl: pickImage(2),
       tags: ["Smart Home", "Decoración", "WiFi"],
     },
     {
@@ -245,16 +273,14 @@ function fallbackProductIdeas(
       description:
         "Carga móvil, reloj y auriculares a la vez. Compacta y elegante.",
       price: "€34.99",
-      imageUrl:
-        "https://images.unsplash.com/photo-1603899122634-f086ca5f5ddd?auto=format&fit=crop&w=500&h=350",
+      imageUrl: pickImage(3),
       tags: ["Tecnología", "Gadgets", "Carga"],
     },
     {
       name: "Proyector de Estrellas con Altavoz Bluetooth",
       description: "Convierte tu habitación en un cielo estrellado con música.",
       price: "€39.99",
-      imageUrl:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=500&h=350",
+      imageUrl: pickImage(4),
       tags: ["Hogar", "Relajación", "Tecnología"],
     },
   ];
@@ -264,7 +290,7 @@ function fallbackProductIdeas(
     const isViral = index === 1;
     const isPopular = !isTrending && !isViral;
 
-    return {
+    const out: any = {
       ...basicInfo,
       rating: 4 + (index % 2) * 0.5,
       reviews: 300 + index * 100,
@@ -272,6 +298,15 @@ function fallbackProductIdeas(
       viral: isViral,
       popular: isPopular,
       views: `${10 + index * 5}k+`,
-    } as InsertProduct;
+      tags: ensureTags(basicInfo.tags),
+    };
+
+    // Seguro extra
+    if (!out.name) out.name = `Producto viral #${index + 1}`;
+    if (!out.description) out.description = "Producto recomendado para ti.";
+    if (!out.price) out.price = "€19.99";
+    if (!out.imageUrl) out.imageUrl = pickImage(index);
+
+    return out as InsertProduct;
   });
 }
