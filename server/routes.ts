@@ -37,7 +37,6 @@ function safeString(v: any, fallback = ""): string {
 }
 
 function ensureName(p: any, idx: number): string {
-  // Acepta name (ideal) o title (tu fallback viejo) u otros
   const name =
     safeString(p?.name) ||
     safeString(p?.title) ||
@@ -46,12 +45,17 @@ function ensureName(p: any, idx: number): string {
 
   if (name) return name;
   const desc = safeString(p?.description);
-  return desc ? `Producto recomendado #${idx + 1}` : `Producto viral #${idx + 1}`;
+  return desc
+    ? `Producto recomendado #${idx + 1}`
+    : `Producto viral #${idx + 1}`;
 }
 
 function ensureArrayTags(v: any): string[] {
   if (Array.isArray(v)) {
-    return v.map((x) => safeString(x)).filter(Boolean).slice(0, 5);
+    return v
+      .map((x) => safeString(x))
+      .filter(Boolean)
+      .slice(0, 5);
   }
   if (typeof v === "string") {
     return v
@@ -80,19 +84,21 @@ function pickImage(idx: number): string {
  */
 function normalizeForDb(products: any[]): any[] {
   return (products || []).slice(0, 5).map((p: any, idx: number) => {
-    const trending = typeof p?.trending === "boolean" ? p.trending : idx % 2 === 0;
+    const trending =
+      typeof p?.trending === "boolean" ? p.trending : idx % 2 === 0;
     const viral = typeof p?.viral === "boolean" ? p.viral : idx === 1;
     const popular =
       typeof p?.popular === "boolean" ? p.popular : !trending && !viral;
 
     const out: any = {
-      // ✅ clave: name nunca null
       name: ensureName(p, idx),
       description: safeString(p?.description, "Producto recomendado para ti."),
       price: safeString(p?.price, "€19.99"),
       imageUrl: safeString(p?.imageUrl) || pickImage(idx),
       rating: Number.isFinite(Number(p?.rating)) ? Number(p.rating) : 4.5,
-      reviews: Number.isFinite(Number(p?.reviews)) ? Math.max(0, Math.floor(Number(p.reviews))) : 300,
+      reviews: Number.isFinite(Number(p?.reviews))
+        ? Math.max(0, Math.floor(Number(p.reviews)))
+        : 300,
       trending,
       viral,
       popular,
@@ -100,7 +106,6 @@ function normalizeForDb(products: any[]): any[] {
       tags: ensureArrayTags(p?.tags),
     };
 
-    // Seguro extra
     if (!out.name) out.name = `Producto viral #${idx + 1}`;
     if (!out.imageUrl) out.imageUrl = pickImage(idx);
 
@@ -108,9 +113,9 @@ function normalizeForDb(products: any[]): any[] {
   });
 }
 
-// Helper: fallback products if OpenAI fails (YA con name, no title)
+// Helper: fallback products if OpenAI fails
 function fallbackProducts(category?: string) {
-  const cat = category || "General";
+  const _cat = category || "General";
   return [
     {
       name: "Soporte plegable para portátil",
@@ -172,6 +177,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  /**
+   * ✅ NUEVO ENDPOINT: Guardar / Añadir (modo demo)
+   * POST /api/products/:id/save
+   * body: { action?: "save" | "add" }
+   *
+   * Nota: En este momento NO tienes tabla “saved_products” ni “cart”.
+   * Entonces devolvemos éxito y listo. Cuando quieras, lo conectamos a DB.
+   */
+  app.post("/api/products/:id/save", async (req: any, res) => {
+    try {
+      const userId = sayUserIdOrDemo(req);
+
+      const productId = Number(req.params.id);
+      if (!Number.isFinite(productId)) {
+        return res.status(400).json({ message: "ID de producto inválido" });
+      }
+
+      const action =
+        req?.body?.action === "add" || req?.body?.action === "save"
+          ? req.body.action
+          : "save";
+
+      // 1) Intentar obtener producto
+      const product = await storage.getProduct(productId);
+      if (!product) {
+        return res.status(404).json({ message: "Producto no encontrado" });
+      }
+
+      // 2) Seguridad básica: en demo, solo permitimos operar sobre productos del mismo userId
+      // (si prefieres permitirlo a todos, elimina este if)
+      if (product.userId !== userId) {
+        return res.status(403).json({
+          message:
+            "No puedes modificar este producto (no pertenece a tu usuario demo).",
+        });
+      }
+
+      // 3) Aún no hay “save/cart” en DB: respondemos OK y listo
+      return res.json({
+        ok: true,
+        action,
+        productId,
+        message: action === "add" ? "Producto añadido." : "Producto guardado.",
+      });
+    } catch (error) {
+      console.error("Error saving/adding product:", error);
+      return res.status(500).json({ message: "Error al procesar la acción" });
+    }
+  });
+
   // Product generation routes (public OK)
   app.post("/api/generate-products", async (req: any, res) => {
     try {
@@ -204,10 +259,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         products = fallbackProducts(category);
       }
 
-      // ✅ normaliza SIEMPRE (OpenAI o fallback)
       const normalized = normalizeForDb(products);
 
-      // ✅ guarda de forma segura: si uno falla, no tumba todo
       const savedProducts = await Promise.all(
         normalized.map(async (product: any, idx: number) => {
           try {
@@ -257,10 +310,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         products = fallbackProducts(category);
       }
 
-      // ✅ normaliza SIEMPRE
       const normalized = normalizeForDb(products);
 
-      // ✅ guarda sin tumbar todo si uno falla
       const savedProducts = await Promise.all(
         normalized.map(async (product: any, idx: number) => {
           try {
@@ -275,9 +326,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const filtered = savedProducts.filter(Boolean);
 
-      // ✅ si por lo que sea no guardó ninguno, aún así responde 200 con fallback normalizado
       if (!filtered.length) {
-        return res.json({ products: normalized.map((p) => ({ ...p, userId })) });
+        return res.json({
+          products: normalized.map((p) => ({ ...p, userId })),
+        });
       }
 
       res.json({ products: filtered });
@@ -355,7 +407,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         (user.monthlyContentGenerations || 0) >= 5
       ) {
         return res.status(403).json({
-          message: "Límite de generaciones gratuitas alcanzado. Mejora tu plan.",
+          message:
+            "Límite de generaciones gratuitas alcanzado. Mejora tu plan.",
         });
       }
 
@@ -393,62 +446,78 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/create-subscription", isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const { planId } = req.body;
+  app.post(
+    "/api/create-subscription",
+    isAuthenticated,
+    async (req: any, res) => {
+      try {
+        const userId = req.user.claims.sub;
+        const { planId } = req.body;
 
-      let user = await storage.getUser(userId);
-      if (!user) {
-        return res.status(404).json({ message: "Usuario no encontrado" });
-      }
-
-      if (user.stripeSubscriptionId) {
-        const subscription = await stripe.subscriptions.retrieve(
-          user.stripeSubscriptionId,
-        );
-        if (subscription.status === "active") {
-          const invoice = subscription.latest_invoice as any;
-          const paymentIntent = typeof invoice === 'object' && invoice ? invoice.payment_intent : null;
-          const clientSecret = typeof paymentIntent === 'object' && paymentIntent ? paymentIntent.client_secret : null;
-          return res.json({
-            subscriptionId: subscription.id,
-            clientSecret,
-          });
+        let user = await storage.getUser(userId);
+        if (!user) {
+          return res.status(404).json({ message: "Usuario no encontrado" });
         }
-      }
 
-      let customerId = user.stripeCustomerId;
-      if (!customerId) {
-        const customer = await stripe.customers.create({
-          email: user.email || undefined,
-          name: `${user.firstName} ${user.lastName}`.trim() || undefined,
+        if (user.stripeSubscriptionId) {
+          const subscription = await stripe.subscriptions.retrieve(
+            user.stripeSubscriptionId,
+          );
+          if (subscription.status === "active") {
+            const invoice = subscription.latest_invoice as any;
+            const paymentIntent =
+              typeof invoice === "object" && invoice
+                ? invoice.payment_intent
+                : null;
+            const clientSecret =
+              typeof paymentIntent === "object" && paymentIntent
+                ? paymentIntent.client_secret
+                : null;
+            return res.json({
+              subscriptionId: subscription.id,
+              clientSecret,
+            });
+          }
+        }
+
+        let customerId = user.stripeCustomerId;
+        if (!customerId) {
+          const customer = await stripe.customers.create({
+            email: user.email || undefined,
+            name: `${user.firstName} ${user.lastName}`.trim() || undefined,
+          });
+          customerId = customer.id;
+          user = await storage.updateUserStripeInfo(userId, customerId, "");
+        }
+
+        const subscription = await stripe.subscriptions.create({
+          customer: customerId,
+          items: [{ price: planId }],
+          payment_behavior: "default_incomplete",
+          expand: ["latest_invoice.payment_intent"],
         });
-        customerId = customer.id;
-        user = await storage.updateUserStripeInfo(userId, customerId, "");
+
+        await storage.updateUserStripeInfo(userId, customerId, subscription.id);
+
+        const newInvoice = subscription.latest_invoice as any;
+        const newPaymentIntent =
+          typeof newInvoice === "object" && newInvoice
+            ? newInvoice.payment_intent
+            : null;
+        const newClientSecret =
+          typeof newPaymentIntent === "object" && newPaymentIntent
+            ? newPaymentIntent.client_secret
+            : null;
+        res.json({
+          subscriptionId: subscription.id,
+          clientSecret: newClientSecret,
+        });
+      } catch (error) {
+        console.error("Error creating subscription:", error);
+        res.status(500).json({ message: "Error creating subscription" });
       }
-
-      const subscription = await stripe.subscriptions.create({
-        customer: customerId,
-        items: [{ price: planId }],
-        payment_behavior: "default_incomplete",
-        expand: ["latest_invoice.payment_intent"],
-      });
-
-      await storage.updateUserStripeInfo(userId, customerId, subscription.id);
-
-      const newInvoice = subscription.latest_invoice as any;
-      const newPaymentIntent = typeof newInvoice === 'object' && newInvoice ? newInvoice.payment_intent : null;
-      const newClientSecret = typeof newPaymentIntent === 'object' && newPaymentIntent ? newPaymentIntent.client_secret : null;
-      res.json({
-        subscriptionId: subscription.id,
-        clientSecret: newClientSecret,
-      });
-    } catch (error) {
-      console.error("Error creating subscription:", error);
-      res.status(500).json({ message: "Error creating subscription" });
-    }
-  });
+    },
+  );
 
   // Template marketplace routes
   app.get("/api/templates", async (req, res) => {
@@ -488,19 +557,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/templates/:id/purchase", isAuthenticated, async (req: any, res) => {
-    try {
-      const userId = req.user.claims.sub;
-      const templateId = parseInt(req.params.id);
-      const { price } = req.body;
+  app.post(
+    "/api/templates/:id/purchase",
+    isAuthenticated,
+    async (req: any, res) => {
+      try {
+        const userId = req.user.claims.sub;
+        const templateId = parseInt(req.params.id);
+        const { price } = req.body;
 
-      const purchase = await storage.purchaseTemplate(userId, templateId, price);
-      res.json(purchase);
-    } catch (error) {
-      console.error("Error purchasing template:", error);
-      res.status(500).json({ message: "Error purchasing template" });
-    }
-  });
+        const purchase = await storage.purchaseTemplate(
+          userId,
+          templateId,
+          price,
+        );
+        res.json(purchase);
+      } catch (error) {
+        console.error("Error purchasing template:", error);
+        res.status(500).json({ message: "Error purchasing template" });
+      }
+    },
+  );
 
   // Stripe webhook handler
   app.post("/api/stripe/webhook", async (req, res) => {
@@ -526,17 +603,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const subscriptionId = invoice.subscription;
           const customerId = invoice.customer;
 
-          const subscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
+          const subscription = (await stripe.subscriptions.retrieve(
+            subscriptionId,
+          )) as any;
           await stripe.customers.retrieve(customerId);
 
           const users = await storage.getUserByStripeCustomerId(customerId);
           if (users.length > 0) {
             const user = users[0];
-            const planName = subscription.items.data[0].price.nickname || "premium";
+            const planName =
+              subscription.items.data[0].price.nickname || "premium";
             const endsAt = new Date(subscription.current_period_end * 1000);
 
             await storage.updateUserSubscription(user.id, planName, endsAt);
-            console.log(`✅ Subscription activated for user ${user.id}: ${planName}`);
+            console.log(
+              `✅ Subscription activated for user ${user.id}: ${planName}`,
+            );
           }
           break;
         }
@@ -545,7 +627,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           const deletedSubscription = event.data.object;
           const deletedCustomerId = deletedSubscription.customer;
 
-          const deletedUsers = await storage.getUserByStripeCustomerId(deletedCustomerId);
+          const deletedUsers =
+            await storage.getUserByStripeCustomerId(deletedCustomerId);
           if (deletedUsers.length > 0) {
             const user = deletedUsers[0];
             await storage.updateUserSubscription(user.id, "free");
@@ -656,20 +739,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.patch("/api/consulting/:id/status", isAuthenticated, async (req: any, res) => {
-    try {
-      const serviceId = parseInt(req.params.id);
-      const { status } = req.body;
+  app.patch(
+    "/api/consulting/:id/status",
+    isAuthenticated,
+    async (req: any, res) => {
+      try {
+        const serviceId = parseInt(req.params.id);
+        const { status } = req.body;
 
-      const service = await storage.updateConsultingServiceStatus(serviceId, status);
-      res.json(service);
-    } catch (error) {
-      console.error("Error updating consulting service status:", error);
-      res.status(500).json({ message: "Error updating consulting service status" });
-    }
-  });
+        const service = await storage.updateConsultingServiceStatus(
+          serviceId,
+          status,
+        );
+        res.json(service);
+      } catch (error) {
+        console.error("Error updating consulting service status:", error);
+        res
+          .status(500)
+          .json({ message: "Error updating consulting service status" });
+      }
+    },
+  );
 
   const httpServer = createServer(app);
   return httpServer;
 }
 
+/**
+ * ✅ Fix: en el endpoint /api/products/:id/save usé mal el helper,
+ * por eso lo dejo aquí abajo para que NO haya errores.
+ */
+function sayUserIdOrDemo(req: any) {
+  return getUserIdOrDemo(req);
+}
