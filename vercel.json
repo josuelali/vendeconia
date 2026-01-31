@@ -1,1 +1,8 @@
-{\n  "version": 2,\n  "builds": [\n    {\n      "src": "package.json",\n      "use": "@vercel/static-build",\n      "config": { "distDir": "dist/public" }\n    }\n  ],\n  "routes": [\n    { "src": "/(.*)", "dest": "/dist/public/$1" }\n  ]\n}
+{
+  "builds": [
+    {
+      "src": "client/**",
+      "use": "@vercel/static"
+    }
+  ]
+}
