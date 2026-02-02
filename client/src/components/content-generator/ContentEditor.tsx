@@ -1,5 +1,5 @@
 import { FormEvent } from "react";
-import { Copy } from "lucide-react";
+import { Copy, ExternalLink } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -35,8 +35,11 @@ export default function ContentEditor({
 
   const handleCopyScript = (e: FormEvent) => {
     e.preventDefault();
-
     if (!selectedProduct) return;
+
+    const url =
+      selectedProduct?.affiliateUrl ||
+      "https://vendeconia.org/guias";
 
     const script = `
 🎬 GUION PARA REEL / TIKTOK
@@ -57,18 +60,23 @@ ${contentData.animation}
 
 CTA:
 ${contentData.cta}
+
+🔗 LINK:
+${url}
     `.trim();
 
     navigator.clipboard.writeText(script);
     toast({
       title: "Guion copiado",
-      description: "Pégalo en CapCut, Reels o donde quieras.",
+      description: "Incluye CTA y enlace listo para monetizar.",
     });
   };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-      <h3 className="text-lg font-bold text-gray-900 mb-6">Editor de contenido</h3>
+      <h3 className="text-lg font-bold text-gray-900 mb-6">
+        Editor de contenido
+      </h3>
 
       <form onSubmit={handleCopyScript} className="space-y-6">
         <div>
@@ -170,7 +178,7 @@ ${contentData.cta}
           disabled={!selectedProduct}
         >
           <Copy className="h-4 w-4 mr-2" />
-          Copiar guion
+          Copiar guion monetizable
         </Button>
       </form>
     </div>
