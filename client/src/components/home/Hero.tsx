@@ -1,16 +1,16 @@
 import { Link } from "wouter";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 export default function Hero() {
   return (
     <div className="relative bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
-          <svg 
-            className="hidden lg:block absolute right-0 inset-y-0 h-full w-48 text-white transform translate-x-1/2" 
-            fill="currentColor" 
-            viewBox="0 0 100 100" 
-            preserveAspectRatio="none" 
+          <svg
+            className="hidden lg:block absolute right-0 inset-y-0 h-full w-48 text-white transform translate-x-1/2"
+            fill="currentColor"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
             aria-hidden="true"
           >
             <polygon points="50,0 100,0 50,100 0,100" />
@@ -30,7 +30,8 @@ export default function Hero() {
                 contenido promocional en minutos. Todo impulsado por IA avanzada.
               </p>
 
-              <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+              <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-center lg:justify-start">
+                {/* BOTÓN PRINCIPAL */}
                 <div className="rounded-md shadow">
                   <Link href="/product-generator">
                     <a className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 md:py-4 md:text-lg md:px-10">
@@ -39,14 +40,15 @@ export default function Hero() {
                   </Link>
                 </div>
 
-                <div className="mt-3 sm:mt-0 sm:ml-3">
-                  <a
-                    href="#how-it-works"
-                    className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-primary-100 hover:bg-primary-200 md:py-4 md:text-lg md:px-10"
-                  >
-                    Ver demo <Play className="ml-2 h-5 w-5" />
-                  </a>
-                </div>
+                {/* BOTÓN AMAZON */}
+                <a
+                  href="https://amzn.to/4rmMNkU"
+                  target="_blank"
+                  rel="nofollow sponsored noopener"
+                  className="w-full sm:w-auto flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600"
+                >
+                  Ver producto recomendado en Amazon
+                </a>
               </div>
             </div>
           </div>
@@ -55,7 +57,7 @@ export default function Hero() {
 
       {/* IMAGEN HERO */}
       <div className="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
-        <img 
+        <img
           className="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
           src="/oficina-ia-vendeconia.png"
           alt="Equipo trabajando con inteligencia artificial en oficina"
