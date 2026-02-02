@@ -1,9 +1,11 @@
 import { FormEvent } from "react";
+import { Copy } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 import { Product } from "@shared/schema";
 
 type ContentData = {
@@ -29,25 +31,48 @@ export default function ContentEditor({
   contentData,
   onContentChange
 }: ContentEditorProps) {
+  const { toast } = useToast();
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleCopyScript = (e: FormEvent) => {
     e.preventDefault();
+
+    if (!selectedProduct) return;
+
+    const script = `
+🎬 GUION PARA REEL / TIKTOK
+
+Producto: ${selectedProduct.name}
+
+Título:
+${contentData.title}
+
+Descripción:
+${contentData.description}
+
+Música:
+${contentData.music}
+
+Animación:
+${contentData.animation}
+
+CTA:
+${contentData.cta}
+    `.trim();
+
+    navigator.clipboard.writeText(script);
+    toast({
+      title: "Guion copiado",
+      description: "Pégalo en CapCut, Reels o donde quieras.",
+    });
   };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-      <h3 className="text-lg font-bold text-gray-900 mb-2">
-        Editor de contenido (Demo)
-      </h3>
+      <h3 className="text-lg font-bold text-gray-900 mb-6">Editor de contenido</h3>
 
-      <p className="text-sm text-gray-500 mb-6">
-        Ejemplo de cómo se vería un contenido generado con inteligencia artificial.
-      </p>
-
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Product Selection */}
+      <form onSubmit={handleCopyScript} className="space-y-6">
         <div>
-          <Label className="mb-2 block">Selecciona un producto</Label>
+          <Label className="mb-2 block">Producto</Label>
           <Select
             value={selectedProduct?.id?.toString() || ""}
             onValueChange={(value) => {
@@ -68,92 +93,85 @@ export default function ContentEditor({
           </Select>
         </div>
 
-        {/* Title */}
         <div>
-          <Label className="mb-2 block">Título del video</Label>
+          <Label>Título</Label>
           <Input
             value={contentData.title}
             onChange={(e) => onContentChange({ title: e.target.value })}
-            placeholder="🔥 El gadget que está arrasando en TikTok"
             maxLength={60}
           />
         </div>
 
-        {/* Description */}
         <div>
-          <Label className="mb-2 block">Descripción</Label>
+          <Label>Descripción</Label>
           <Textarea
             rows={3}
             value={contentData.description}
             onChange={(e) => onContentChange({ description: e.target.value })}
-            placeholder="Descubre por qué todo el mundo lo quiere. Envío rápido y oferta limitada."
             maxLength={200}
           />
         </div>
 
-        {/* Music */}
         <div>
-          <Label className="mb-2 block">Música de fondo</Label>
+          <Label>Música</Label>
           <Select
             value={contentData.music}
             onValueChange={(value) => onContentChange({ music: value })}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecciona un estilo de música" />
+              <SelectValue placeholder="Selecciona música" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="Tendencia - Upbeat">Tendencia - Upbeat</SelectItem>
+              <SelectItem value="Upbeat tendencia">Upbeat tendencia</SelectItem>
               <SelectItem value="Electrónica">Electrónica</SelectItem>
               <SelectItem value="Pop">Pop</SelectItem>
+              <SelectItem value="Corporativa">Corporativa</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Animation */}
         <div>
-          <Label className="mb-2 block">Estilo de animación</Label>
-          <div className="grid grid-cols-3 gap-3">
-            {["Zoom", "Deslizar", "Rebote"].map((style) => (
-              <Button
-                key={style}
-                type="button"
-                variant={contentData.animation === style ? "secondary" : "outline"}
-                onClick={() => onContentChange({ animation: style })}
-              >
-                {style}
-              </Button>
-            ))}
-          </div>
+          <Label>Animación</Label>
+          <Select
+            value={contentData.animation}
+            onValueChange={(value) => onContentChange({ animation: value })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Selecciona animación" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Zoom">Zoom</SelectItem>
+              <SelectItem value="Deslizar">Deslizar</SelectItem>
+              <SelectItem value="Rebote">Rebote</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* CTA */}
         <div>
-          <Label className="mb-2 block">Llamada a la acción</Label>
+          <Label>CTA</Label>
           <Select
             value={contentData.cta}
             onValueChange={(value) => onContentChange({ cta: value })}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Selecciona una llamada a la acción" />
+              <SelectValue placeholder="Selecciona CTA" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Comprar ahora">Comprar ahora</SelectItem>
-              <SelectItem value="Ver más">Ver más</SelectItem>
               <SelectItem value="Oferta limitada">Oferta limitada</SelectItem>
+              <SelectItem value="Lo quiero">Lo quiero</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        {/* Demo Button */}
-        <div className="pt-4">
-          <Button
-            type="submit"
-            disabled={!selectedProduct}
-            className="w-full bg-gray-300 cursor-not-allowed"
-          >
-            Ver ejemplo de contenido
-          </Button>
-        </div>
+        <Button
+          type="submit"
+          className="w-full bg-primary-500 hover:bg-primary-600"
+          disabled={!selectedProduct}
+        >
+          <Copy className="h-4 w-4 mr-2" />
+          Copiar guion
+        </Button>
       </form>
     </div>
   );
