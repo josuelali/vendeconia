@@ -1,106 +1,62 @@
 export default function ContentGeneratorDemo() {
   return (
-    <div className="py-16 bg-white">
+    <section className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-base font-semibold text-primary-500 tracking-wide uppercase font-heading">
+        {/* TITULO */}
+        <div className="text-center mb-14">
+          <h2 className="text-sm font-semibold text-primary-500 uppercase tracking-wide">
             Creador de contenido
           </h2>
-          <p className="mt-1 text-3xl font-extrabold text-gray-900 sm:text-4xl font-heading">
+          <h3 className="mt-2 text-4xl font-extrabold text-gray-900">
             De la idea al reel en minutos
-          </p>
-          <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-            Crea guiones y vídeos optimizados para vender productos con enlaces de afiliado.
+          </h3>
+          <p className="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+            Incluso si empiezas desde cero, puedes crear vídeos que venden
+            productos con enlaces de afiliado en cuestión de minutos.
           </p>
         </div>
 
-        <div className="mt-12 lg:flex lg:items-center lg:gap-8">
-          {/* REAL VIDEO DEMO */}
-          <div className="lg:w-1/2">
-            <div className="bg-black rounded-xl overflow-hidden shadow-xl">
-              <video
-                src="/demo.mp4"
-                className="w-full h-full object-cover"
-                autoPlay
-                muted
-                loop
-                playsInline
-                controls
-              />
-            </div>
+        {/* CONTENIDO */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* VIDEO REAL */}
+          <div className="rounded-xl overflow-hidden shadow-xl">
+            <video
+              src="/demo.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              controls
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          {/* CONTROLS (DEMO UI) */}
-          <div className="mt-10 lg:mt-0 lg:w-1/2">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">
-              Editor de contenido (Demo)
-            </h3>
+          {/* TEXTO */}
+          <div>
+            <h4 className="text-2xl font-bold text-gray-900 mb-4">
+              Un ejemplo real, hecho en minutos
+            </h4>
 
-            <div className="space-y-6 opacity-90">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Título del vídeo
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                  defaultValue="¡ORGANIZADOR QUE NECESITAS YA! 😍"
-                  readOnly
-                />
-              </div>
+            <p className="text-lg text-gray-600 mb-6">
+              Este vídeo es un ejemplo real creado por mí para demostrar que no
+              necesitas experiencia previa ni herramientas complejas.
+            </p>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Descripción
-                </label>
-                <textarea
-                  rows={3}
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                  defaultValue="Mantén todos tus cables organizados. Oferta limitada 🔥"
-                  readOnly
-                />
-              </div>
+            <p className="text-lg text-gray-600 mb-8">
+              Con una buena idea, un guion claro y el enfoque correcto, puedes
+              empezar hoy mismo a crear contenido que atrae visitas y genera
+              ingresos.
+            </p>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Música
-                </label>
-                <input
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                  value="Upbeat – Tendencia"
-                  readOnly
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Estilo
-                </label>
-                <input
-                  className="mt-1 block w-full border-gray-300 rounded-md shadow-sm"
-                  value="Zoom"
-                  readOnly
-                />
-              </div>
-
-              {/* CTA REAL */}
-              <a
-                href="/guias"
-                className="block w-full text-center bg-primary-500 text-white py-3 rounded-md font-medium hover:bg-primary-600 transition"
-              >
-                Ver cómo crear vídeos que venden →
-              </a>
-
-              <a
-                href="/guias"
-                className="block w-full text-center bg-secondary-500 text-white py-3 rounded-md font-medium hover:bg-secondary-600 transition"
-              >
-                Guías paso a paso y ejemplos reales
-              </a>
-            </div>
+            <a
+              href="/guias"
+              className="inline-block bg-primary-500 text-white px-6 py-3 rounded-md text-lg font-medium hover:bg-primary-600 transition"
+            >
+              Ver cómo hacerlo paso a paso →
+            </a>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
