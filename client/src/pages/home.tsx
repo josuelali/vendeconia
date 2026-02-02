@@ -19,6 +19,39 @@ export default function Home() {
         <Hero />
         <Features />
         <HowItWorks />
+
+        {/* 🔽 BLOQUE SEO HOME */}
+        <section className="max-w-7xl mx-auto px-4 py-16">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">
+              Descubre productos en tendencia y crea contenido viral con IA
+            </h2>
+
+            <p className="text-gray-600 mb-4">
+              En <strong>VendeConIA</strong> te ayudamos a descubrir
+              <strong> productos en tendencia</strong> que se están vendiendo
+              ahora mismo en Amazon y otras plataformas online. Analizamos el
+              mercado para ofrecerte ideas reales y listas para monetizar.
+            </p>
+
+            <p className="text-gray-600 mb-4">
+              Además, puedes crear <strong>contenido viral</strong> optimizado
+              para TikTok, Reels e Instagram Shorts mediante guiones diseñados
+              para captar atención, generar clics y aumentar conversiones,
+              incluso si no tienes experiencia previa.
+            </p>
+
+            <p className="text-gray-600">
+              Esta plataforma está pensada para emprendedores digitales,
+              creadores de contenido y personas que buscan
+              <strong> ganar dinero online</strong> usando inteligencia
+              artificial de forma práctica, sencilla y sin complicaciones
+              técnicas.
+            </p>
+          </div>
+        </section>
+        {/* 🔼 FIN BLOQUE SEO HOME */}
+
         <ProductDemo />
         <AppDemo />
         <ContentGeneratorDemo />
