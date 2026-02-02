@@ -1,10 +1,26 @@
-vimport { useMemo } from "react";
-import { Star, StarHalf, Share2Icon, ExternalLink } from "lucide-react";
+import {
+  Star,
+  StarHalf,
+  Share2Icon,
+  ShoppingCart,
+} from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Product } from "@shared/schema";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
+
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: string;
+  imageUrl?: string;
+  rating?: number;
+  reviews?: number;
+  trending?: boolean;
+  tags?: string[];
+  amazonUrl?: string;
+}
 
 interface ProductDisplayProps {
   products: Product[];
@@ -13,31 +29,13 @@ interface ProductDisplayProps {
 export default function ProductDisplay({ products }: ProductDisplayProps) {
   const { toast } = useToast();
 
-  const baseUrl = useMemo(() => {
-    try {
-      return window.location.origin;
-    } catch {
-      return "";
-    }
-  }, []);
-
-  const handleShareProduct = async (product: Product) => {
-    const url =
-      product.amazonUrl ||
-      (baseUrl ? `${baseUrl}` : product.name);
-
-    try {
-      await navigator.clipboard.writeText(url);
-      toast({
-        title: "Enlace copiado",
-        description: "Puedes compartirlo donde quieras.",
-      });
-    } catch {
-      toast({
-        title: "No se pudo copiar",
-        description: url,
-      });
-    }
+  const handleCopyIdea = async (product: Product) => {
+    const text = `Idea de producto:\n\n${product.name}\n${product.description}\nPrecio objetivo: ${product.price}`;
+    await navigator.clipboard.writeText(text);
+    toast({
+      title: "Idea copiada",
+      description: "Puedes pegarla donde quieras.",
+    });
   };
 
   const renderStars = (rating: number) => {
@@ -50,7 +48,7 @@ export default function ProductDisplay({ products }: ProductDisplayProps) {
         <Star
           key={`star-${i}`}
           className="h-4 w-4 text-yellow-400 fill-yellow-400"
-        />,
+        />
       );
     }
 
@@ -59,14 +57,14 @@ export default function ProductDisplay({ products }: ProductDisplayProps) {
         <StarHalf
           key="half-star"
           className="h-4 w-4 text-yellow-400 fill-yellow-400"
-        />,
+        />
       );
     }
 
     const emptyStars = 5 - stars.length;
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
-        <Star key={`empty-star-${i}`} className="h-4 w-4 text-yellow-400" />,
+        <Star key={`empty-star-${i}`} className="h-4 w-4 text-yellow-400" />
       );
     }
 
@@ -75,12 +73,9 @@ export default function ProductDisplay({ products }: ProductDisplayProps) {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">
-        Productos sugeridos (Demo)
+      <h2 className="text-2xl font-bold text-gray-900 mb-6">
+        Productos recomendados
       </h2>
-      <p className="text-sm text-gray-500 mb-6">
-        Ejemplos de productos que podrían funcionar bien para vender online.
-      </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {products.map((product) => (
@@ -101,14 +96,9 @@ export default function ProductDisplay({ products }: ProductDisplayProps) {
             <CardContent className="p-6">
               <div className="flex justify-between items-center mb-3">
                 {product.trending && (
-                  <Badge className="bg-accent-50 text-accent-600">
+                  <Badge className="bg-orange-100 text-orange-600">
                     Tendencia
                   </Badge>
-                )}
-                {product.views && (
-                  <span className="text-sm text-gray-500">
-                    Vistas: {product.views}
-                  </span>
                 )}
               </div>
 
@@ -124,6 +114,7 @@ export default function ProductDisplay({ products }: ProductDisplayProps) {
                 <span className="text-xl font-bold text-secondary-500">
                   {product.price}
                 </span>
+
                 {product.rating && (
                   <div className="flex items-center">
                     <div className="flex mr-1">
@@ -136,7 +127,7 @@ export default function ProductDisplay({ products }: ProductDisplayProps) {
                 )}
               </div>
 
-              {product.tags?.length > 0 && (
+              {product.tags && (
                 <div className="flex flex-wrap gap-1 mb-4">
                   {product.tags.map((tag, index) => (
                     <Badge
@@ -155,24 +146,25 @@ export default function ProductDisplay({ products }: ProductDisplayProps) {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => handleShareProduct(product)}
+                onClick={() => handleCopyIdea(product)}
               >
                 <Share2Icon className="h-4 w-4 mr-2" />
-                Copiar enlace
+                Copiar idea
               </Button>
 
-              {product.amazonUrl && (
-                <a
-                  href={product.amazonUrl}
-                  target="_blank"
-                  rel="nofollow sponsored noopener"
-                >
-                  <Button size="sm">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Ver en Amazon
-                  </Button>
-                </a>
-              )}
+              <Button
+                size="sm"
+                className="bg-orange-500 hover:bg-orange-600"
+                onClick={() =>
+                  window.open(
+                    product.amazonUrl || "https://www.amazon.es",
+                    "_blank"
+                  )
+                }
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Ver en Amazon
+              </Button>
             </CardFooter>
           </Card>
         ))}
