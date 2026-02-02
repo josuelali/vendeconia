@@ -40,15 +40,20 @@ export default function Hero() {
                   </Link>
                 </div>
 
-                {/* BOTÓN AMAZON */}
-                <a
-                  href="https://amzn.to/4rmMNkU"
-                  target="_blank"
-                  rel="nofollow sponsored noopener"
-                  className="w-full sm:w-auto flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600"
-                >
-                  Ver producto recomendado en Amazon
-                </a>
+                {/* BOTÓN AMAZON OPTIMIZADO */}
+                <div className="flex flex-col items-start">
+                  <a
+                    href="https://amzn.to/4rmMNkU"
+                    target="_blank"
+                    rel="nofollow sponsored noopener"
+                    className="w-full sm:w-auto flex items-center justify-center px-6 py-3 text-base font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600"
+                  >
+                    Ver gadget tecnológico viral en Amazon
+                  </a>
+                  <p className="mt-1 text-sm text-gray-500">
+                    ⭐ Más de 4,5/5 en valoraciones · Envío rápido
+                  </p>
+                </div>
               </div>
             </div>
           </div>
