@@ -3,6 +3,8 @@ import { Link, useLocation } from "wouter";
 import { Menu, X, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
+const AMAZON_AFFILIATE_URL = "https://amzn.to/4tfrnbg";
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [location] = useLocation();
@@ -51,16 +53,20 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Right CTA */}
+          {/* Right CTA (AFILIADO) */}
           <div className="hidden sm:flex items-center">
             <Button
+              asChild
               className="bg-orange-500 hover:bg-orange-600"
-              onClick={() =>
-                window.open("https://www.amazon.es", "_blank")
-              }
             >
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Ver ofertas
+              <a
+                href={AMAZON_AFFILIATE_URL}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Ver ofertas
+              </a>
             </Button>
           </div>
 
@@ -103,13 +109,17 @@ export default function Navbar() {
             </Link>
 
             <Button
+              asChild
               className="w-full bg-orange-500 hover:bg-orange-600 mt-4"
-              onClick={() =>
-                window.open("https://www.amazon.es", "_blank")
-              }
             >
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Ver ofertas en Amazon
+              <a
+                href={AMAZON_AFFILIATE_URL}
+                target="_blank"
+                rel="nofollow sponsored noopener"
+              >
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Ver ofertas en Amazon
+              </a>
             </Button>
           </div>
         </div>
