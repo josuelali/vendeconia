@@ -49,10 +49,10 @@ export default function Home() {
               técnicas.
             </p>
 
-            {/* 🔽 BOTÓN AMAZON (IZQUIERDA DE LA IMAGEN EN PC Y ARRIBA DE LA IMAGEN EN MOVIL) */}
+            {/* ✅ BOTÓN AMAZON (PRODUCTO: SOPORTE ORDENADOR) */}
             <div className="mt-8 flex justify-center">
               <a
-                href="https://amzn.to/3ZhC67h"
+                href="https://amzn.to/4a5UbtT"
                 target="_blank"
                 rel="nofollow sponsored"
                 className="inline-block px-6 py-3 bg-orange-500 text-black font-bold rounded-xl shadow-lg hover:bg-orange-400 transition"
@@ -60,7 +60,6 @@ export default function Home() {
                 Ver soporte recomendado en Amazon
               </a>
             </div>
-            {/* 🔼 FIN BOTÓN AMAZON */}
           </div>
         </section>
         {/* 🔼 FIN BLOQUE SEO HOME */}
