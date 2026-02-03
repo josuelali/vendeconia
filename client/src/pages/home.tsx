@@ -7,7 +7,7 @@ import AppDemo from "@/components/home/AppDemo";
 import ContentGeneratorDemo from "@/components/home/ContentGeneratorDemo";
 import Pricing from "@/components/home/Pricing";
 import CTA from "@/components/home/CTA";
-import Footer from "@/components/components/layout/Footer";
+import Footer from "@/components/layout/Footer";
 import AdBanner from "@/components/AdBanner";
 
 export default function Home() {
@@ -49,7 +49,7 @@ export default function Home() {
               técnicas.
             </p>
 
-            {/* 🔽 BOTÓN AMAZON (JUSTO ARRIBA DE LA IMAGEN) */}
+            {/* 🔽 BOTÓN AMAZON (ARRIBA DE LA IMAGEN) */}
             <div className="mt-8 flex justify-center">
               <a
                 href="https://amzn.to/4a5UbtT"
