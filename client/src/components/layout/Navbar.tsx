@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, ShoppingCart } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
-const AMAZON_AFFILIATE_URL = "https://amzn.to/4tfrnbg";
+import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -53,23 +50,6 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Right CTA (AFILIADO) */}
-          <div className="hidden sm:flex items-center">
-            <Button
-              asChild
-              className="bg-orange-500 hover:bg-orange-600"
-            >
-              <a
-                href={AMAZON_AFFILIATE_URL}
-                target="_blank"
-                rel="nofollow sponsored noopener"
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Ver ofertas
-              </a>
-            </Button>
-          </div>
-
           {/* Mobile menu button */}
           <div className="flex items-center sm:hidden">
             <button
@@ -107,20 +87,6 @@ export default function Navbar() {
             >
               <a className="block text-gray-700">Contenido</a>
             </Link>
-
-            <Button
-              asChild
-              className="w-full bg-orange-500 hover:bg-orange-600 mt-4"
-            >
-              <a
-                href={AMAZON_AFFILIATE_URL}
-                target="_blank"
-                rel="nofollow sponsored noopener"
-              >
-                <ShoppingCart className="h-4 w-4 mr-2" />
-                Ver ofertas en Amazon
-              </a>
-            </Button>
           </div>
         </div>
       )}
