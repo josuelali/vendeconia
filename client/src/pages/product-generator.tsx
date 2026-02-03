@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import Navbar from "@/components/layout/Navbar";
@@ -17,35 +15,10 @@ export default function ProductGenerator() {
   const [trendingOnly, setTrendingOnly] = useState<boolean>(false);
   const [fastShipping, setFastShipping] = useState<boolean>(true);
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { toast } = useToast();
   const { user } = useAuth();
-
-  const generateProductsMutation = useMutation({
-    mutationFn: async () => {
-      const response = await apiRequest("POST", "/api/products/generate", {
-        category: selectedCategory,
-        priceRange,
-        trendingOnly,
-        fastShipping,
-      });
-      return response.json();
-    },
-    onSuccess: (data: any) => {
-      setProducts(data?.products || []);
-      toast({
-        title: "¡Productos generados!",
-        description: "Hemos encontrado algunos productos virales para ti.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        title: "Error al generar productos",
-        description: error?.message || "Hubo un problema. Inténtalo de nuevo.",
-        variant: "destructive",
-      });
-    },
-  });
 
   const handleGenerateProducts = () => {
     if (!selectedCategory) {
@@ -71,7 +44,46 @@ export default function ProductGenerator() {
       return;
     }
 
-    generateProductsMutation.mutate();
+    // 👉 DEMO: simulamos carga
+    setLoading(true);
+    setProducts([]);
+
+    setTimeout(() => {
+      const demoProducts: Product[] = [
+        {
+          id: 1,
+          name: "Soporte ajustable para portátil",
+          category: selectedCategory,
+          price: 29.99,
+          isTrending: true,
+          fastShipping: true,
+        },
+        {
+          id: 2,
+          name: "Lámpara LED ambiental con control táctil",
+          category: selectedCategory,
+          price: 24.95,
+          isTrending: trendingOnly,
+          fastShipping: fastShipping,
+        },
+        {
+          id: 3,
+          name: "Organizador de escritorio minimalista",
+          category: selectedCategory,
+          price: 19.99,
+          isTrending: true,
+          fastShipping: fastShipping,
+        },
+      ];
+
+      setProducts(demoProducts);
+      setLoading(false);
+
+      toast({
+        title: "¡Productos generados!",
+        description: "Estos son productos simulados para la demo.",
+      });
+    }, 1200);
   };
 
   return (
@@ -81,11 +93,11 @@ export default function ProductGenerator() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 font-heading">
-            Generador de Productos
+            Generador de Productos (Demo)
           </h1>
           <p className="mt-2 text-lg text-gray-600">
             Selecciona tus intereses y preferencias para generar sugerencias de
-            productos virales.
+            productos en modo demostración.
           </p>
         </div>
 
@@ -106,10 +118,10 @@ export default function ProductGenerator() {
               <div className="mt-6 flex justify-end">
                 <button
                   onClick={handleGenerateProducts}
-                  disabled={generateProductsMutation.isPending}
+                  disabled={loading}
                   className="px-5 py-3 rounded-lg shadow-lg text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 flex items-center disabled:opacity-70 disabled:cursor-not-allowed"
                 >
-                  {generateProductsMutation.isPending ? (
+                  {loading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Generando...
@@ -137,11 +149,11 @@ export default function ProductGenerator() {
           </div>
         </div>
 
-        {generateProductsMutation.isPending && (
+        {loading && (
           <div className="text-center py-12">
             <Loader2 className="h-12 w-12 mx-auto animate-spin text-primary-500" />
             <p className="mt-4 text-lg text-gray-600">
-              Buscando los mejores productos para ti...
+              Analizando tendencias con IA…
             </p>
           </div>
         )}
