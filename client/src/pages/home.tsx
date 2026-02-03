@@ -48,18 +48,6 @@ export default function Home() {
               artificial de forma práctica, sencilla y sin complicaciones
               técnicas.
             </p>
-
-            {/* ✅ BOTÓN AMAZON (PRODUCTO: SOPORTE ORDENADOR) */}
-            <div className="mt-8 flex justify-center">
-              <a
-                href="https://amzn.to/4a5UbtT"
-                target="_blank"
-                rel="nofollow sponsored"
-                className="inline-block px-6 py-3 bg-orange-500 text-black font-bold rounded-xl shadow-lg hover:bg-orange-400 transition"
-              >
-                Ver soporte recomendado en Amazon
-              </a>
-            </div>
           </div>
         </section>
         {/* 🔼 FIN BLOQUE SEO HOME */}
