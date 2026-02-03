@@ -84,7 +84,7 @@ function App() {
               textAlign: "center",
             }}
           >
-            Ver cargador recomendado en Amazon
+            Ver producto recomendado en Amazon
           </a>
         </div>
 
