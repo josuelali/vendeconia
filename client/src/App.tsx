@@ -58,36 +58,6 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-
-        {/* Amazon affiliate button (visible on all pages) */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            padding: "12px 12px",
-          }}
-        >
-          <a
-            href="https://amzn.to/46kUcsT"
-            target="_blank"
-            rel="nofollow sponsored"
-            style={{
-              padding: "12px 20px",
-              backgroundColor: "#FF9900",
-              color: "#000",
-              fontWeight: "bold",
-              borderRadius: "10px",
-              textDecoration: "none",
-              boxShadow: "0 6px 16px rgba(0,0,0,0.15)",
-              maxWidth: 360,
-              width: "100%",
-              textAlign: "center",
-            }}
-          >
-            Ver producto recomendado en Amazon
-          </a>
-        </div>
-
         <Router />
       </TooltipProvider>
     </QueryClientProvider>
