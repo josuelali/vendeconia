@@ -13,7 +13,7 @@ import Templates from "@/pages/templates";
 import Dashboard from "@/pages/dashboard";
 import Subscribe from "@/pages/subscribe";
 
-// 👉 IMPORTAR PÁGINAS LEGALES
+// Import legal pages
 import Privacidad from "@/pages/legal/Privacidad";
 import Terminos from "@/pages/legal/Terminos";
 import Cookies from "@/pages/legal/Cookies";
@@ -33,7 +33,7 @@ function NotFound() {
 function Router() {
   return (
     <Switch>
-      {/* Show homepage by default */}
+      {/* Main pages */}
       <Route path="/" component={Home} />
       <Route path="/product-generator" component={ProductGenerator} />
       <Route path="/content-generator" component={ContentGenerator} />
@@ -42,12 +42,12 @@ function Router() {
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/subscribe" component={Subscribe} />
 
-      {/* 👉 RUTAS LEGALES */}
+      {/* Legal pages */}
       <Route path="/politica-de-privacidad" component={Privacidad} />
       <Route path="/terminos-y-condiciones" component={Terminos} />
       <Route path="/cookies" component={Cookies} />
 
-      {/* Fallback to 404 */}
+      {/* Fallback */}
       <Route component={NotFound} />
     </Switch>
   );
@@ -59,7 +59,7 @@ function App() {
       <TooltipProvider>
         <Toaster />
 
-        {/* Botón Amazon (visible en TODAS las páginas) */}
+        {/* Amazon affiliate button (visible on all pages) */}
         <div
           style={{
             display: "flex",
@@ -68,7 +68,7 @@ function App() {
           }}
         >
           <a
-            href="https://amzn.to/4qO3lma"
+            href="https://amzn.to/46kUcsT"
             target="_blank"
             rel="nofollow sponsored"
             style={{
