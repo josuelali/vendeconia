@@ -7,7 +7,7 @@ import AppDemo from "@/components/home/AppDemo";
 import ContentGeneratorDemo from "@/components/home/ContentGeneratorDemo";
 import Pricing from "@/components/home/Pricing";
 import CTA from "@/components/home/CTA";
-import Footer from "@/components/layout/Footer";
+import Footer from "@/components/components/layout/Footer";
 import AdBanner from "@/components/AdBanner";
 
 export default function Home() {
@@ -48,6 +48,19 @@ export default function Home() {
               artificial de forma práctica, sencilla y sin complicaciones
               técnicas.
             </p>
+
+            {/* 🔽 BOTÓN AMAZON (JUSTO ARRIBA DE LA IMAGEN) */}
+            <div className="mt-8 flex justify-center">
+              <a
+                href="https://amzn.to/4a5UbtT"
+                target="_blank"
+                rel="nofollow sponsored"
+                className="inline-block px-6 py-3 bg-orange-500 text-black font-bold rounded-xl shadow-lg hover:bg-orange-400 transition"
+              >
+                Ver soporte recomendado en Amazon
+              </a>
+            </div>
+            {/* 🔼 FIN BOTÓN AMAZON */}
           </div>
         </section>
         {/* 🔼 FIN BLOQUE SEO HOME */}
