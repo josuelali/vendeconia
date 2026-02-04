@@ -36,7 +36,7 @@ export default function Home() {
             {/* 🔽 BOTÓN AMAZON (RECUADRO MORADO) */}
             <div className="mt-6">
               <a
-                href="https://amzn.to/4rtdvbE"
+                href="https://amzn.to/4tibkt2"
                 target="_blank"
                 rel="nofollow sponsored noopener"
                 className="inline-block px-6 py-3 bg-orange-500 text-black font-bold rounded-xl shadow-lg hover:bg-orange-400 transition"
