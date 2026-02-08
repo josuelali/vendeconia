@@ -37,12 +37,15 @@ export default function Hero() {
               {/* CTA */}
               <div className="mt-6 sm:flex sm:justify-center lg:justify-start">
                 <div className="rounded-md shadow">
-                  <Link href="/product-generator">
-                    <a className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-primary-500 hover:bg-primary-600 md:py-4 md:text-lg md:px-10">
-                      Ver productos en tendencia
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </a>
-                  </Link>
+                 <a
+  href="https://www.fourvenues.com/joshue-cabello-rosa/events/viernes-prohibido-20-02-2026-0PY6"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="w-full flex items-center justify-center rounded-md bg-pink-600 px-6 py-3 text-white font-semibold shadow-md hover:bg-pink-500 transition"
+>
+  🎟️ Viernes Prohibido · Comprar entradas
+</a>
+
                 </div>
               </div>
             </div>
