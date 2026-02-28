@@ -33,7 +33,9 @@ export default function Hero() {
                 Descubre productos virales, crea contenido para TikTok y Reels
                 y monetiza con Amazon sin conocimientos técnicos.
               </p>
-
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Imagen Hero */}
