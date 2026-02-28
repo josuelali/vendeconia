@@ -34,23 +34,6 @@ export default function Hero() {
                 y monetiza con Amazon sin conocimientos técnicos.
               </p>
 
-              {/* CTA */}
-              <div className="mt-6 sm:flex sm:justify-center lg:justify-start">
-                <div className="rounded-md shadow">
-                 <a
-  href="https://www.fourvenues.com/joshue-cabello-rosa/events/viernes-prohibido-20-02-2026-0PY6"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="w-full flex items-center justify-center rounded-md bg-pink-600 px-6 py-3 text-white font-semibold shadow-md hover:bg-pink-500 transition"
->
-  🎟️ Viernes Prohibido · Comprar entradas
-</a>
-
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
       {/* Imagen Hero */}
