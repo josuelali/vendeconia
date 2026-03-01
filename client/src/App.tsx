@@ -3,6 +3,7 @@ import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { Helmet } from "react-helmet-async";
 
 // Import all pages
 import Home from "@/pages/home";
@@ -57,9 +58,23 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+
+        {/* GOOGLE ANALYTICS GA4 */}
+        <Helmet>
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-XBK5WGCDBQ"></script>
+          <script>
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-XBK5WGCDBQ');
+            `}
+          </script>
+        </Helmet>
+
         <Toaster />
 
-        {/* BOTÓN AMAZON PRINCIPAL (GLOBAL) -> CARGADOR */}
+        {/* BOTÓN AMAZON PRINCIPAL (GLOBAL) */}
         <div
           style={{
             display: "flex",
