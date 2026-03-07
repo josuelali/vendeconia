@@ -1,0 +1,15 @@
+{
+  "name": "VendeConIA",
+  "short_name": "VendeConIA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/generated-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
