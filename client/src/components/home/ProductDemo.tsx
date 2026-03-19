@@ -1,135 +1,267 @@
-import { Star, StarHalf } from "lucide-react";
+import { Link } from "wouter";
+import { ArrowRight, Search, Sparkles, ShoppingBag, Tags } from "lucide-react";
 
-const products = [
+const demoProducts = [
   {
-    id: 1,
-    name: "Organizador Multifuncional para Gadgets",
-    description: "Mantén todos tus cables, cargadores y accesorios electrónicos organizados con este elegante estuche resistente al agua.",
-    price: "€19.99",
-    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&h=350",
-    rating: 4.5,
-    reviews: 342,
-    trending: true,
-    views: "15k+",
-    tags: ["Tecnología", "Organización", "Unisex"]
+    title: "Organizador multifuncional para coche",
+    subtitle: "Tendencia",
+    price: "€18,99",
+    image:
+      "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
+    badge: "Amazon",
+    visits: "Visitas: 12k+",
   },
   {
-    id: 2,
-    name: "Botella Motivacional con Indicador de Tiempo",
-    description: "Mantente hidratado a lo largo del día con esta botella que te recuerda cuándo debes beber agua. Libre de BPA.",
-    price: "€24.99",
-    image: "https://pixabay.com/get/ge1501c97962eed23b0a39fe285bfc80f0d7ba3579b28c1a262637be0782034bd7f30aa43ffa072d1cbad2bf58c3fa3d241b6549bd0211da2fb8bcd52f33725e2_1280.jpg",
-    rating: 5,
-    reviews: 687,
-    trending: true,
-    viral: true,
-    views: "32k+",
-    tags: ["Fitness", "Ecológico", "Bestseller"]
+    title: "Botella motivacional con indicador de tiempo",
+    subtitle: "Tendencia",
+    price: "€24,90",
+    image:
+      "https://images.unsplash.com/photo-1602143407151-7111542de6e8?auto=format&fit=crop&w=900&q=80",
+    badge: "Lifestyle",
+    visits: "Visitas: 9k+",
   },
   {
-    id: 3,
-    name: "Luz LED Inteligente Multicolor",
-    description: "Transforma el ambiente de tu hogar con esta luz LED que ofrece 16 millones de colores y control por voz y app.",
-    price: "€29.99",
-    image: "https://images.unsplash.com/photo-1558002038-1055907df827?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=500&h=350",
-    rating: 4,
-    reviews: 429,
-    popular: true,
-    views: "24k+",
-    tags: ["Smart Home", "Decoración", "WiFi"]
-  }
+    title: "Luz LED inteligente multifunción",
+    subtitle: "Popular",
+    price: "€29,99",
+    image:
+      "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=900&q=80",
+    badge: "Tecnología",
+    visits: "Visitas: 20k+",
+  },
+];
+
+const featureItems = [
+  {
+    icon: Search,
+    title: "Exploración más útil",
+    text: "Encuentre ideas de producto con mejor criterio y menos ruido.",
+  },
+  {
+    icon: Tags,
+    title: "Contexto comercial",
+    text: "Revise categoría, ángulo y señales para decidir más rápido.",
+  },
+  {
+    icon: Sparkles,
+    title: "Base para contenido",
+    text: "Use la ficha generada como arranque para copy, short o review.",
+  },
 ];
 
 export default function ProductDemo() {
-  const renderStars = (rating: number) => {
-    const stars = [];
-    const fullStars = Math.floor(rating);
-    const hasHalfStar = rating % 1 !== 0;
-    
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={`star-${i}`} className="h-5 w-5 text-yellow-400 fill-yellow-400" />);
-    }
-    
-    if (hasHalfStar) {
-      stars.push(<StarHalf key="half-star" className="h-5 w-5 text-yellow-400 fill-yellow-400" />);
-    }
-    
-    const emptyStars = 5 - stars.length;
-    for (let i = 0; i < emptyStars; i++) {
-      stars.push(<Star key={`empty-star-${i}`} className="h-5 w-5 text-yellow-400" />);
-    }
-    
-    return stars;
-  };
-
   return (
-    <div className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-base font-semibold text-primary-500 tracking-wide uppercase font-heading">Demostración</h2>
-          <p className="mt-2 text-3xl font-extrabold text-gray-900 sm:text-4xl font-heading">
-            Así se ven las sugerencias de productos
-          </p>
-          <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-            Aquí tienes un ejemplo de lo que nuestra IA puede generar para ti en cuestión de segundos.
-          </p>
-        </div>
+    <section className="relative bg-white">
+      <div className="max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+          {/* BLOQUE PRINCIPAL */}
+          <div className="xl:col-span-2">
+            <div className="max-w-3xl">
+              <p className="inline-flex items-center rounded-full border border-primary-200 bg-primary-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-primary-600">
+                Descubrimiento de productos
+              </p>
 
-        {/* Product Suggestion Cards */}
-        <div className="mt-12 grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <div key={product.id} className="bg-white overflow-hidden shadow-lg rounded-lg hover:shadow-xl transition duration-300 transform hover:scale-[1.03]">
-              <img 
-                className="h-60 w-full object-cover" 
-                src={product.image} 
-                alt={product.name} 
-              />
-              <div className="p-6">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium text-accent-500 bg-accent-50 py-1 px-2 rounded-full">
-                    {product.trending ? "Tendencia" : product.viral ? "Viral" : "Popular"}
-                  </span>
-                  <span className="text-sm font-medium text-gray-500">Vistas: {product.views}</span>
-                </div>
-                <h3 className="mt-3 text-lg font-bold text-gray-900">{product.name}</h3>
-                <p className="mt-2 text-gray-600 text-sm">
-                  {product.description}
-                </p>
-                <div className="mt-4 flex justify-between items-center">
-                  <span className="text-xl font-bold text-secondary-500">{product.price}</span>
-                  <div className="flex items-center">
-                    {renderStars(product.rating)}
-                    <span className="ml-1 text-sm text-gray-500">({product.reviews})</span>
+              <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+                Así se ven las sugerencias de productos dentro de VendeConIA
+              </h2>
+
+              <p className="mt-5 text-lg text-slate-600 leading-8">
+                Esta demo no debe parecer una galería cualquiera. Debe transmitir que
+                aquí empieza un flujo comercial: detectar una oportunidad, validarla y
+                convertirla en contenido o monetización.
+              </p>
+            </div>
+
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              {demoProducts.map((product) => (
+                <article
+                  key={product.title}
+                  className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-2xl"
+                >
+                  <div className="relative">
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="h-56 w-full object-cover"
+                    />
+
+                    <div className="absolute left-4 top-4 rounded-full bg-white/90 backdrop-blur px-3 py-1 text-[11px] font-bold uppercase tracking-[0.16em] text-slate-700 shadow">
+                      {product.subtitle}
+                    </div>
                   </div>
+
+                  <div className="p-5">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                        {product.badge}
+                      </span>
+                      <span className="text-xs font-medium text-slate-400">
+                        {product.visits}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-4 text-xl font-bold leading-snug text-slate-900">
+                      {product.title}
+                    </h3>
+
+                    <div className="mt-4 flex items-center justify-between">
+                      <p className="text-lg font-extrabold text-slate-900">
+                        {product.price}
+                      </p>
+
+                      <div className="flex items-center gap-1 text-amber-500">
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span className="text-slate-300">★</span>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      <span className="rounded-full bg-primary-50 px-3 py-1 text-xs font-medium text-primary-700">
+                        Ecommerce
+                      </span>
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                        Copy
+                      </span>
+                      <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600">
+                        Afiliación
+                      </span>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            {/* BLOQUE DE APOYO */}
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+              {featureItems.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    key={item.title}
+                    className="rounded-2xl border border-slate-200 bg-slate-50 p-5"
+                  >
+                    <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-slate-200 text-primary-600 shadow-sm">
+                      <Icon className="h-5 w-5" />
+                    </div>
+
+                    <h3 className="mt-4 text-base font-bold text-slate-900">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-7 text-slate-600">
+                      {item.text}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* SIDEBAR DE MONETIZACIÓN / ACCIÓN */}
+          <aside className="xl:sticky xl:top-24 space-y-6">
+            <div className="rounded-3xl border border-orange-200 bg-gradient-to-br from-orange-50 to-amber-100 p-7 shadow-sm">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-orange-700">
+                Recomendado
+              </p>
+
+              <h3 className="mt-4 text-2xl font-extrabold leading-tight text-slate-900">
+                Producto recomendado en Amazon
+              </h3>
+
+              <p className="mt-4 text-sm sm:text-base leading-7 text-slate-700">
+                Este bloque tiene más sentido aquí que suelto arriba. Se integra con la
+                narrativa de producto y monetización sin romper la experiencia.
+              </p>
+
+              <ul className="mt-5 space-y-2 text-sm text-slate-700">
+                <li>• Encaja con el flujo comercial</li>
+                <li>• Puede rotarse por nicho o categoría</li>
+                <li>• Es útil para GadgetsMania y afiliación</li>
+              </ul>
+
+              <a
+                href="https://amzn.to/4tibkt2"
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-4 text-sm font-bold text-black shadow-lg transition hover:bg-orange-400"
+              >
+                Ver producto recomendado en Amazon
+              </a>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-slate-900 p-7 text-white shadow-xl">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300">
+                Demo principal
+              </p>
+
+              <h3 className="mt-4 text-2xl font-extrabold leading-tight">
+                Abra el generador y convierta una idea en ficha de producto útil
+              </h3>
+
+              <p className="mt-4 text-sm sm:text-base leading-7 text-slate-300">
+                El objetivo no es mostrar tarjetas bonitas, sino preparar una base
+                aprovechable para afiliación, ecommerce, review o creación de contenido.
+              </p>
+
+              <div className="mt-6 space-y-3">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-sm font-semibold text-white">Buscar producto</p>
+                  <p className="mt-1 text-sm text-slate-300">
+                    Elija una categoría o una idea inicial.
+                  </p>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {product.tags.map((tag) => (
-                    <span 
-                      key={`${product.id}-${tag}`} 
-                      className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-sm font-semibold text-white">Validar enfoque</p>
+                  <p className="mt-1 text-sm text-slate-300">
+                    Revise contexto, señales y ángulo comercial.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-sm font-semibold text-white">Pasar a contenido</p>
+                  <p className="mt-1 text-sm text-slate-300">
+                    Lleve esa ficha al generador de copies o guiones.
+                  </p>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
 
-        <div className="mt-8 text-center">
-          <a 
-            href="/product-generator" 
-            className="px-6 py-3 bg-primary-500 text-white font-semibold rounded-lg hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all duration-200 inline-flex items-center"
-          >
-            Ver más productos 
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </a>
+              <Link href="/product-generator">
+                <a className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-primary-500 px-5 py-4 text-sm font-bold text-white transition hover:bg-primary-600">
+                  Abrir generador de productos
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+              </Link>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 border border-primary-100 text-primary-600">
+                  <ShoppingBag className="h-5 w-5" />
+                </div>
+
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">
+                    Uso ideal para su ecosistema
+                  </p>
+                  <p className="text-xs text-slate-500">
+                    GadgetsMania + redes + contenido afiliado
+                  </p>
+                </div>
+              </div>
+
+              <p className="mt-4 text-sm leading-7 text-slate-600">
+                Esta parte debe terminar siendo la antesala para detectar productos,
+                sacar ideas comerciales y alimentar fichas, shorts y artículos de afiliación.
+              </p>
+            </div>
+          </aside>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

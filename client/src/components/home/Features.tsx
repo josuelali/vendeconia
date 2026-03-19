@@ -1,86 +1,180 @@
-import { 
-  Lightbulb, 
-  Search, 
-  Film, 
-  ImagePlus, 
-  ShoppingBag, 
-  Instagram 
+import {
+  Search,
+  Sparkles,
+  Megaphone,
+  ImagePlus,
+  Store,
+  BarChart3,
 } from "lucide-react";
 
 const features = [
   {
-    name: "Generador de ideas de nicho",
-    description: "Nuestra IA analiza tendencias del mercado y te sugiere nichos rentables basados en tus intereses y experiencia.",
-    icon: Lightbulb,
-    color: "primary"
-  },
-  {
-    name: "Buscador de productos virales",
-    description: "Encuentra productos con alto potencial de venta a través de nuestras integraciones con CJdropshipping y Amazon.",
     icon: Search,
-    color: "secondary"
+    title: "Generador de ideas de nicho",
+    description:
+      "Detecte oportunidades, categorías y líneas de producto con más claridad antes de perder tiempo creando contenido sin dirección.",
   },
   {
-    name: "Creador de reels y textos",
-    description: "Genera videos promocionales tipo reel con títulos animados y textos persuasivos para aumentar tus conversiones.",
-    icon: Film,
-    color: "accent"
+    icon: Sparkles,
+    title: "Buscador de productos virales",
+    description:
+      "Visualice ejemplos de productos con potencial comercial para validar más rápido qué merece la pena testear o promocionar.",
   },
   {
-    name: "Editor de mockups y portadas",
-    description: "Crea imágenes profesionales para tus productos y portadas atractivas para tus redes sociales en segundos.",
+    icon: Megaphone,
+    title: "Creador de reels y textos",
+    description:
+      "Genere copies, hooks, descripciones y estructuras promocionales orientadas a conversión para redes, ecommerce y afiliación.",
+  },
+  {
     icon: ImagePlus,
-    color: "primary"
+    title: "Editor de mockups y portadas",
+    description:
+      "Prepare piezas visuales y creatividades más atractivas para presentar productos de forma más profesional y persuasiva.",
   },
   {
-    name: "Integración con Shopify",
-    description: "Sube tus productos directamente a Shopify con un solo clic, ahorrando horas de trabajo manual.",
-    icon: ShoppingBag,
-    color: "secondary"
+    icon: Store,
+    title: "Integración con Shopify",
+    description:
+      "Organice mejor el flujo entre producto, escaparate y publicación para reducir trabajo manual y ganar velocidad operativa.",
   },
   {
-    name: "Publicación en redes sociales",
-    description: "Programa y publica tu contenido directamente en Instagram, TikTok y otras plataformas populares.",
-    icon: Instagram,
-    color: "accent"
-  }
+    icon: BarChart3,
+    title: "Publicación en redes sociales",
+    description:
+      "Convierta ideas de producto en piezas publicables para Instagram, TikTok o shorts sin depender de un proceso improvisado.",
+  },
 ];
 
 export default function Features() {
   return (
-    <div id="features" className="py-12 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="lg:text-center">
-          <h2 className="text-lg text-primary-500 font-semibold font-heading">Características</h2>
-          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl font-heading">
-            Todo lo que necesitas para vender online
+    <section className="relative bg-gradient-to-b from-slate-50 to-white border-y border-slate-200">
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_26%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.08),transparent_24%)]" />
+
+      <div className="relative max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center">
+          <p className="inline-flex items-center rounded-full border border-primary-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-primary-600 shadow-sm">
+            Características principales
           </p>
-          <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-            VendeConIA te ayuda a crear una tienda online exitosa utilizando el poder de la inteligencia artificial.
+
+          <h2 className="mt-5 text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+            Todo lo que necesita para detectar productos y convertirlos en contenido de venta
+          </h2>
+
+          <p className="mt-5 text-lg text-slate-600">
+            VendeConIA está pensada para ayudarle a pasar de una idea o tendencia
+            a un activo comercial más claro: producto, copy, creatividad y publicación.
           </p>
         </div>
 
-        <div className="mt-10">
-          <dl className="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-10">
-            {features.map((feature) => (
-              <div 
-                key={feature.name} 
-                className="relative bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition duration-300 transform hover:scale-[1.03]"
+        <div className="mt-14 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {features.map((feature) => {
+            const Icon = feature.icon;
+
+            return (
+              <article
+                key={feature.title}
+                className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-xl hover:border-primary-200"
               >
-                <dt>
-                  <div className={`absolute flex items-center justify-center h-12 w-12 rounded-md text-white bg-${feature.color}-500`}>
-                    <feature.icon className="h-6 w-6" aria-hidden="true" />
+                <div className="flex items-start justify-between gap-4">
+                  <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary-50 border border-primary-100 text-primary-600 group-hover:bg-primary-100 transition">
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <p className="ml-16 text-lg leading-6 font-medium text-gray-900">{feature.name}</p>
-                </dt>
-                <dd className="mt-2 ml-16 text-base text-gray-500">
+
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500">
+                    Feature
+                  </span>
+                </div>
+
+                <h3 className="mt-5 text-xl font-bold text-slate-900 leading-snug">
+                  {feature.title}
+                </h3>
+
+                <p className="mt-3 text-sm sm:text-base leading-7 text-slate-600">
                   {feature.description}
-                </dd>
+                </p>
+
+                <div className="mt-6 flex items-center gap-2 text-sm font-semibold text-primary-600">
+                  <span className="h-2 w-2 rounded-full bg-primary-500" />
+                  Preparado para flujo comercial
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div className="mt-14 rounded-3xl border border-slate-200 bg-slate-900 text-white shadow-2xl overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
+            <div className="lg:col-span-2 p-8 sm:p-10 lg:p-12">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300">
+                Enfoque recomendado
+              </p>
+
+              <h3 className="mt-4 text-2xl sm:text-3xl font-extrabold leading-tight">
+                No piense en VendeConIA como una landing más. Piénsela como una herramienta para producir mejor.
+              </h3>
+
+              <p className="mt-5 max-w-3xl text-slate-300 text-base sm:text-lg leading-8">
+                La ventaja real no está solo en enseñar productos, sino en unir una
+                ruta operativa clara: descubrir, validar, crear contenido y monetizar
+                con menos fricción.
+              </p>
+
+              <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-sm font-semibold text-white">1. Detectar</p>
+                  <p className="mt-2 text-sm text-slate-300">
+                    Encontrar productos o nichos con sentido comercial.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-sm font-semibold text-white">2. Crear</p>
+                  <p className="mt-2 text-sm text-slate-300">
+                    Generar copies, hooks, guiones y materiales promocionales.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <p className="text-sm font-semibold text-white">3. Monetizar</p>
+                  <p className="mt-2 text-sm text-slate-300">
+                    Llevar ese contenido a afiliación, ecommerce o redes.
+                  </p>
+                </div>
               </div>
-            ))}
-          </dl>
+            </div>
+
+            <div className="border-t lg:border-t-0 lg:border-l border-white/10 bg-gradient-to-br from-orange-400 to-amber-500 p-8 sm:p-10 flex flex-col justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-[0.22em] text-black/70">
+                  Recomendación táctica
+                </p>
+
+                <h4 className="mt-4 text-2xl font-extrabold text-black leading-tight">
+                  Empiece por una sola ruta clara
+                </h4>
+
+                <p className="mt-4 text-sm sm:text-base leading-7 text-black/80">
+                  Producto ganador + copy + visual + CTA. Esa combinación vale más
+                  que tener muchas secciones bonitas sin un flujo comercial real.
+                </p>
+              </div>
+
+              <div className="mt-8 rounded-2xl bg-black/10 p-5 border border-black/10">
+                <p className="text-sm font-semibold text-black">
+                  Prioridad recomendada
+                </p>
+                <ul className="mt-3 space-y-2 text-sm text-black/80">
+                  <li>• Buscar producto</li>
+                  <li>• Validar enfoque</li>
+                  <li>• Crear contenido</li>
+                  <li>• Llevarlo a monetización</li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
