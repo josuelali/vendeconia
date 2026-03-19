@@ -1,5 +1,22 @@
 import { Link } from "wouter";
-import { ArrowRight, Sparkles, ShoppingBag, Video } from "lucide-react";
+import {
+  ArrowRight,
+  Sparkles,
+  ShoppingBag,
+  Video,
+  CheckCircle2,
+  BadgeDollarSign,
+  Wand2,
+} from "lucide-react";
+
+const integrations = [
+  "Amazon",
+  "Pictory",
+  "Systeme.io",
+  "Hostinger",
+  "Writesonic",
+  "SistemaMaestroIA",
+];
 
 export default function Hero() {
   return (
@@ -8,6 +25,7 @@ export default function Hero() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* COLUMNA IZQUIERDA */}
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-primary-200 bg-primary-50 px-4 py-2 text-sm font-semibold text-primary-700">
               <Sparkles className="h-4 w-4" />
@@ -65,13 +83,47 @@ export default function Hero() {
                   <span className="text-sm font-semibold">Monetización</span>
                 </div>
                 <p className="mt-2 text-sm text-gray-600">
-                  Integre afiliación, pruebas de producto y futuras funciones premium.
+                  Integre afiliación, validación y futuras funciones premium.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="relative">
+          {/* COLUMNA DERECHA */}
+          <div className="relative space-y-5">
+            {/* BANDA SUPERIOR */}
+            <div className="rounded-2xl border border-gray-200 bg-white shadow-sm px-4 py-4 overflow-hidden">
+              <div className="flex items-center justify-between gap-3 mb-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-600">
+                  Compatible con publicación, monetización y sistemas conectados
+                </p>
+                <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                  Ecosistema activo
+                </div>
+              </div>
+
+              <div className="relative overflow-hidden">
+                <div className="flex gap-3 min-w-max animate-[marquee_18s_linear_infinite]">
+                  {[...integrations, ...integrations].map((item, index) => (
+                    <div
+                      key={`${item}-${index}`}
+                      className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm"
+                    >
+                      {item === "Amazon" && <BadgeDollarSign className="h-4 w-4 text-orange-500" />}
+                      {item === "Pictory" && <Video className="h-4 w-4 text-purple-500" />}
+                      {item === "Systeme.io" && <Wand2 className="h-4 w-4 text-blue-500" />}
+                      {item === "Hostinger" && <CheckCircle2 className="h-4 w-4 text-indigo-500" />}
+                      {item === "Writesonic" && <Sparkles className="h-4 w-4 text-pink-500" />}
+                      {item === "SistemaMaestroIA" && <Sparkles className="h-4 w-4 text-emerald-500" />}
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* MOCKUP CENTRAL */}
             <div className="rounded-[28px] border border-gray-200 bg-white shadow-2xl overflow-hidden">
               <div className="flex items-center gap-2 border-b border-gray-100 px-5 py-4 bg-gray-50">
                 <span className="h-3 w-3 rounded-full bg-red-400" />
@@ -89,28 +141,45 @@ export default function Hero() {
               />
             </div>
 
-            <div className="absolute -bottom-6 left-6 right-6 rounded-2xl bg-white/95 backdrop-blur border border-gray-200 shadow-xl p-5">
+            {/* BLOQUE INFERIOR */}
+            <div className="rounded-2xl bg-white border border-gray-200 shadow-xl p-5">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-500">
                 Ruta principal
               </p>
+
               <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="rounded-xl bg-gray-50 p-3 border border-gray-200">
+                <div className="rounded-xl bg-gray-50 p-4 border border-gray-200">
                   <p className="text-sm font-semibold text-gray-900">Buscar ideas</p>
-                  <p className="mt-1 text-xs text-gray-600">Detecte nichos y tendencias.</p>
+                  <p className="mt-1 text-xs text-gray-600">
+                    Detecte nichos, productos y tendencias con mejor criterio.
+                  </p>
                 </div>
-                <div className="rounded-xl bg-gray-50 p-3 border border-gray-200">
+
+                <div className="rounded-xl bg-gray-50 p-4 border border-gray-200">
                   <p className="text-sm font-semibold text-gray-900">Validar producto</p>
-                  <p className="mt-1 text-xs text-gray-600">Vea ejemplos y enfoque comercial.</p>
+                  <p className="mt-1 text-xs text-gray-600">
+                    Revise ejemplos, enfoque comercial y potencial de uso.
+                  </p>
                 </div>
-                <div className="rounded-xl bg-gray-50 p-3 border border-gray-200">
+
+                <div className="rounded-xl bg-gray-50 p-4 border border-gray-200">
                   <p className="text-sm font-semibold text-gray-900">Crear promoción</p>
-                  <p className="mt-1 text-xs text-gray-600">Genere contenido listo para publicar.</p>
+                  <p className="mt-1 text-xs text-gray-600">
+                    Genere contenido listo para publicar o monetizar.
+                  </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+      `}</style>
     </section>
   );
 }
