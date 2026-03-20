@@ -22,9 +22,8 @@ export default function Hero() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-          {/* COLUMNA IZQUIERDA */}
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-primary-400/20 bg-white/5 px-4 py-2 text-sm font-semibold text-primary-200 backdrop-blur">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-amber-200 backdrop-blur">
               <Sparkles className="h-4 w-4" />
               Descubrimiento de productos + contenido con IA
             </div>
@@ -86,16 +85,14 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* COLUMNA DERECHA */}
           <div className="relative space-y-5">
-            {/* BANDA SUPERIOR CON LOGOS REALES */}
             <div className="rounded-2xl border border-white/10 bg-white/5 shadow-sm px-4 py-4 backdrop-blur">
               <div className="flex items-center justify-between gap-3 mb-3">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-200">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-sky-200">
                   Compatible con publicación, monetización y sistemas conectados
                 </p>
 
-                <div className="hidden sm:flex items-center gap-2 text-xs text-slate-300">
+                <div className="hidden sm:flex items-center gap-2 text-xs text-slate-200">
                   <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
                   Ecosistema activo
                 </div>
@@ -120,7 +117,6 @@ export default function Hero() {
               </div>
             </div>
 
-            {/* MOCKUP CENTRAL */}
             <div className="rounded-[28px] border border-white/10 bg-slate-900/60 shadow-2xl overflow-hidden backdrop-blur">
               <div className="flex items-center gap-2 border-b border-white/10 px-5 py-4 bg-slate-900/80">
                 <span className="h-3 w-3 rounded-full bg-red-400" />
@@ -138,7 +134,6 @@ export default function Hero() {
               />
             </div>
 
-            {/* BLOQUE INFERIOR */}
             <div className="rounded-2xl border border-white/10 bg-white/5 shadow-xl p-5 backdrop-blur">
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary-200">
                 Ruta principal

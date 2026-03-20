@@ -91,17 +91,13 @@ export default function Home() {
               </div>
 
               <div className="mt-8">
-                <a
-                  href="https://amzn.to/4tibkt2"
-                  target="_blank"
-                  rel="nofollow sponsored noopener"
-                  className="inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-6 py-4 text-base font-bold text-black shadow-lg transition hover:bg-orange-400"
-                >
-                  Ver producto recomendado en Amazon
-                </a>
+               
               </div>
+
             </aside>
+
           </div>
+
         </section>
 
         <ProductDemo />
