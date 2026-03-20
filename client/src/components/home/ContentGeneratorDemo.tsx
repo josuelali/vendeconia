@@ -16,7 +16,7 @@ const contentOutputs = [
   },
   {
     title: "CTA de monetización",
-    text: "Conecte el contenido con Amazon, afiliación o una ruta comercial sin improvisar al final.",
+    text: "Conecte el contenido con afiliación, producto o una ruta comercial sin improvisar al final.",
   },
 ];
 
@@ -32,8 +32,8 @@ export default function ContentGeneratorDemo() {
     <section className="relative overflow-hidden bg-slate-50 border-y border-slate-200">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_right,rgba(249,115,22,0.08),transparent_24%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.08),transparent_26%)]" />
 
-      <div className="relative max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-center">
           {/* COLUMNA IZQUIERDA */}
           <div>
             <p className="inline-flex items-center rounded-full border border-orange-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-orange-600 shadow-sm">
@@ -66,7 +66,7 @@ export default function ContentGeneratorDemo() {
               ))}
             </div>
 
-            <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 border border-primary-100 text-primary-600">
                   <Wand2 className="h-5 w-5" />
@@ -91,7 +91,7 @@ export default function ContentGeneratorDemo() {
           </div>
 
           {/* COLUMNA DERECHA */}
-          <div className="space-y-6">
+          <div className="space-y-5">
             <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-slate-950 text-white shadow-2xl">
               <div className="flex items-center gap-2 border-b border-white/10 px-5 py-4 bg-slate-900">
                 <span className="h-3 w-3 rounded-full bg-red-400" />
@@ -172,7 +172,7 @@ export default function ContentGeneratorDemo() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary-600">
                   Uso interno potente

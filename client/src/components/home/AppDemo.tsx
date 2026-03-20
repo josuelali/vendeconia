@@ -34,8 +34,8 @@ export default function AppDemo() {
     <section className="relative overflow-hidden bg-slate-50 border-y border-slate-200">
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.08),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(249,115,22,0.08),transparent_24%)]" />
 
-      <div className="relative max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-10 items-center">
+      <div className="relative max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 items-center">
           {/* BLOQUE IZQUIERDO */}
           <div>
             <p className="inline-flex items-center rounded-full border border-primary-200 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-primary-600 shadow-sm">
@@ -64,7 +64,7 @@ export default function AppDemo() {
               ))}
             </div>
 
-            <div className="mt-8 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 border border-primary-100 text-primary-600">
                   <PanelLeft className="h-5 w-5" />
@@ -115,7 +115,6 @@ export default function AppDemo() {
             <div className="absolute -inset-4 rounded-[36px] bg-gradient-to-br from-primary-500/15 to-orange-400/15 blur-2xl" />
 
             <div className="relative overflow-hidden rounded-[32px] border border-slate-200 bg-white shadow-2xl">
-              {/* barra superior */}
               <div className="bg-slate-900 py-4 px-5 flex items-center">
                 <div className="flex space-x-2">
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
@@ -129,8 +128,7 @@ export default function AppDemo() {
                 </div>
               </div>
 
-              {/* mockup */}
-              <div className="grid grid-cols-5 min-h-[520px]">
+              <div className="grid grid-cols-5 min-h-[500px]">
                 {/* sidebar */}
                 <div className="col-span-1 border-r border-slate-200 bg-slate-50 p-4">
                   <div className="mb-6 flex items-center">
@@ -344,7 +342,7 @@ export default function AppDemo() {
               </div>
             </div>
 
-            <div className="mt-6 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="mt-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
               <p className="text-sm font-semibold text-slate-900">
                 Esta vista puede evolucionar a dashboard real
               </p>

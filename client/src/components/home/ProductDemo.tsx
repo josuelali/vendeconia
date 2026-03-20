@@ -52,7 +52,7 @@ const featureItems = [
 export default function ProductDemo() {
   return (
     <section className="relative bg-white">
-      <div className="max-w-7xl mx-auto px-4 py-20 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
           {/* BLOQUE PRINCIPAL */}
           <div className="xl:col-span-2">
@@ -66,13 +66,12 @@ export default function ProductDemo() {
               </h2>
 
               <p className="mt-5 text-lg text-slate-600 leading-8">
-                Esta demo no debe parecer una galería cualquiera. Debe transmitir que
-                aquí empieza un flujo comercial: detectar una oportunidad, validarla y
-                convertirla en contenido o monetización.
+                Esta demo debe transmitir que aquí empieza un flujo útil: detectar
+                una oportunidad, validarla y convertirla en contenido o monetización.
               </p>
             </div>
 
-            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {demoProducts.map((product) => (
                 <article
                   key={product.title}
@@ -135,7 +134,7 @@ export default function ProductDemo() {
             </div>
 
             {/* BLOQUE DE APOYO */}
-            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
               {featureItems.map((item) => {
                 const Icon = item.icon;
 
@@ -161,38 +160,9 @@ export default function ProductDemo() {
             </div>
           </div>
 
-          {/* SIDEBAR DE MONETIZACIÓN / ACCIÓN */}
-          <aside className="xl:sticky xl:top-24 space-y-6">
-            <div className="rounded-3xl border border-orange-200 bg-gradient-to-br from-orange-50 to-amber-100 p-7 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-orange-700">
-                Recomendado
-              </p>
-
-              <h3 className="mt-4 text-2xl font-extrabold leading-tight text-slate-900">
-                Producto recomendado en Amazon
-              </h3>
-
-              <p className="mt-4 text-sm sm:text-base leading-7 text-slate-700">
-                Este bloque tiene más sentido aquí que suelto arriba. Se integra con la
-                narrativa de producto y monetización sin romper la experiencia.
-              </p>
-
-              <ul className="mt-5 space-y-2 text-sm text-slate-700">
-                <li>• Encaja con el flujo comercial</li>
-                <li>• Puede rotarse por nicho o categoría</li>
-                <li>• Es útil para GadgetsMania y afiliación</li>
-              </ul>
-
-              <a
-                href="https://amzn.to/4tibkt2"
-                target="_blank"
-                rel="nofollow sponsored noopener"
-                className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-4 text-sm font-bold text-black shadow-lg transition hover:bg-orange-400"
-              >
-                Ver producto recomendado en Amazon
-              </a>
-            </div>
-
+          {/* SIDEBAR */}
+          <aside className="xl:sticky xl:top-24 space-y-5">
+            {/* DEMO PRINCIPAL */}
             <div className="rounded-3xl border border-slate-200 bg-slate-900 p-7 text-white shadow-xl">
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-300">
                 Demo principal
@@ -238,6 +208,38 @@ export default function ProductDemo() {
               </Link>
             </div>
 
+            {/* AMAZON - SOLO UNO */}
+            <div className="rounded-3xl border border-orange-200 bg-gradient-to-br from-orange-50 to-amber-100 p-7 shadow-sm">
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-orange-700">
+                Recomendado
+              </p>
+
+              <h3 className="mt-4 text-2xl font-extrabold leading-tight text-slate-900">
+                Producto recomendado en Amazon
+              </h3>
+
+              <p className="mt-4 text-sm sm:text-base leading-7 text-slate-700">
+                Un bloque contextual para conectar descubrimiento de producto con
+                afiliación real, sin romper la narrativa de la sección.
+              </p>
+
+              <ul className="mt-5 space-y-2 text-sm text-slate-700">
+                <li>• Encaja con el flujo comercial</li>
+                <li>• Puede rotarse por nicho o categoría</li>
+                <li>• Útil para GadgetsMania y afiliación</li>
+              </ul>
+
+              <a
+                href="https://amzn.to/4tibkt2"
+                target="_blank"
+                rel="nofollow sponsored noopener"
+                className="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-orange-500 px-5 py-4 text-sm font-bold text-black shadow-lg transition hover:bg-orange-400"
+              >
+                Ver producto recomendado en Amazon
+              </a>
+            </div>
+
+            {/* USO DEL ECOSISTEMA */}
             <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
               <div className="flex items-center gap-3">
                 <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 border border-primary-100 text-primary-600">
@@ -255,8 +257,9 @@ export default function ProductDemo() {
               </div>
 
               <p className="mt-4 text-sm leading-7 text-slate-600">
-                Esta parte debe terminar siendo la antesala para detectar productos,
-                sacar ideas comerciales y alimentar fichas, shorts y artículos de afiliación.
+                Esta parte debe servir como antesala para detectar productos,
+                sacar ideas comerciales y alimentar fichas, shorts y artículos
+                de afiliación.
               </p>
             </div>
           </aside>
