@@ -1,95 +1,53 @@
-import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X } from "lucide-react";
+
+const navItems = [
+  { href: "/", label: "Inicio" },
+  { href: "/product-generator", label: "Productos" },
+  { href: "/content-generator", label: "Contenido" },
+];
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [location] = useLocation();
 
-  const isActive = (path: string) => location === path;
-
-  const linkClass = (path: string) =>
-    `inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-      isActive(path)
-        ? "border-primary-500 text-purple-900"
-        : "border-transparent text-purple-500 hover:border-gray-300 hover:text-gray-700"
-    }`;
+  const isActive = (href: string) => {
+    if (href === "/") return location === "/";
+    return location.startsWith(href);
+  };
 
   return (
-    <nav className="bg-slate-50 border-b border-slate-200">
+    <header className="sticky top-0 z-50 border-b border-slate-200 bg-slate-50/95 backdrop-blur">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center">
-            <Link href="/">
-              <a className="text-2xl font-bold text-blue-600">
-                Vende<span className="text-purple-600">Con</span>
-                <span className="text-green-600">IA</span>
-              </a>
-            </Link>
+        <div className="flex h-18 items-center justify-between py-4">
+          <Link href="/">
+            <a className="inline-flex items-center">
+              <span className="text-primary-500 text-[2rem] font-extrabold tracking-tight leading-none">
+                Vende<span className="text-purple-500">Con</span>
+                <span className="text-emerald-500">IA</span>
+              </span>
+            </a>
+          </Link>
 
-            {/* Desktop links */}
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              <Link href="/" className={linkClass("/")}>
-                Inicio
-              </Link>
+          <nav className="flex items-center gap-8">
+            {navItems.map((item) => {
+              const active = isActive(item.href);
 
-              <Link
-                href="/product-generator"
-                className={linkClass("/product-generator")}
-              >
-                Productos
-              </Link>
-
-              <Link
-                href="/content-generator"
-                className={linkClass("/content-generator")}
-              >
-                Contenido
-              </Link>
-            </div>
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="flex items-center sm:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-md text-green-400 hover:text-purple-600 hover:bg-green-100"
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+              return (
+                <Link key={item.href} href={item.href}>
+                  <a
+                    className={`text-base font-medium transition ${
+                      active
+                        ? "text-slate-900 border-b border-slate-300 pb-1"
+                        : "text-slate-700 hover:text-slate-900"
+                    }`}
+                  >
+                    {item.label}
+                  </a>
+                </Link>
+              );
+            })}
+          </nav>
         </div>
       </div>
-
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="sm:hidden bg-white border-t">
-          <div className="px-4 pt-4 pb-6 space-y-3">
-            <Link href="/" onClick={() => setIsMenuOpen(false)}>
-              <a className="block text-purple-700">Inicio</a>
-            </Link>
-
-            <Link
-              href="/product-generator"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <a className="block text-green-700">Productos</a>
-            </Link>
-
-            <Link
-              href="/content-generator"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <a className="block text-purple-700">Contenido</a>
-            </Link>
-          </div>
-        </div>
-      )}
-    </nav>
+    </header>
   );
 }
